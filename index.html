@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apprendre l'IA avec Claude - guide pas à pas</title>
+<style>
+:root {
+  --encre: #2b2622;
+  --fond: #fbf9f6;
+  --accent: #b4532a;
+  --accent-doux: #f5e9df;
+  --bord: #e3dcd2;
+  --gris: #6b625a;
+  --vert: #2e7d4f;
+  --rouge: #b03a2e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: var(--encre);
+  background: var(--fond);
+}
+h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+.sous-titre { color: var(--gris); font-size: 1.1rem; margin-top: 0; }
+h2 {
+  font-size: 1.45rem;
+  line-height: 1.3;
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--bord);
+  color: var(--accent);
+}
+h3 { font-size: 1.1rem; margin-bottom: 0.3rem; }
+a { color: var(--accent); }
+.lang-note { color: var(--gris); font-size: 0.85em; white-space: nowrap; }
+nav.sommaire {
+  background: #fff;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  margin-top: 1.5rem;
+}
+nav.sommaire h2 {
+  margin: 0 0 0.5rem;
+  border: none;
+  padding: 0;
+  font-size: 1.2rem;
+  color: var(--encre);
+}
+nav.sommaire ol { margin: 0; padding-left: 1.4rem; }
+nav.sommaire li { margin: 0.3rem 0; }
+aside.retenir {
+  background: var(--accent-doux);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.75rem 1.25rem;
+  margin: 1.5rem 0;
+}
+aside.retenir h3 { margin-top: 0.25rem; color: var(--accent); }
+aside.retenir ul { margin: 0.5rem 0; padding-left: 1.2rem; }
+aside.retenir li { margin: 0.35rem 0; }
+div.exemple {
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.25rem 1.25rem;
+  margin: 1.25rem 0;
+}
+div.exemple .avant { border-left: 4px solid var(--rouge); padding-left: 0.75rem; }
+div.exemple .apres { border-left: 4px solid var(--vert); padding-left: 0.75rem; }
+div.exemple .avant strong { color: var(--rouge); }
+div.exemple .apres strong { color: var(--vert); }
+ol.checklist { padding-left: 1.5rem; }
+ol.checklist li { margin: 0.85rem 0; padding-left: 0.25rem; }
+figure { margin: 1.75rem 0; }
+figure svg {
+  display: block;
+  background: #fff;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 0.5rem;
+}
+figcaption {
+  font-size: 0.9rem;
+  color: var(--gris);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+pre {
+  background: #fff;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+dl dt { font-weight: 700; margin-top: 1rem; }
+dl dd { margin-left: 0; margin-top: 0.2rem; }
+footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--bord);
+  font-size: 0.9rem;
+  color: var(--gris);
+}
+</style>
+</head>
+<body>
+<header>
+<h1>Apprendre l'IA avec Claude</h1>
+<p class="sous-titre">Un guide pas à pas, en français, pour partir de zéro.</p>
+<p>Vous savez utiliser un ordinateur, vous avez peut-être déjà vu du code, mais l'IA ne vous dit rien&nbsp;: ce guide est pour vous. Aucun prérequis en intelligence artificielle n'est demandé&nbsp;; chaque terme technique est expliqué simplement au moment où il apparaît, et un glossaire en fin de page récapitule tout.</p>
+<p>À la fin de ce guide, vous saurez ce qu'est réellement une IA comme Claude, vous aurez installé Claude Desktop sur votre ordinateur et mené votre première conversation, vous saurez formuler des demandes efficaces, utiliser les fonctions avancées (projets, connecteurs, artifacts), comprendre ce qu'est un agent et une skill, et garder les bons réflexes face aux limites de l'outil.</p>
+</header>
+
+<nav class="sommaire" aria-label="Sommaire">
+<h2>Sommaire</h2>
+<ol>
+<li><a href="#etape-1">C'est quoi, une IA&nbsp;? Comprendre les grands modèles de langage</a></li>
+<li><a href="#etape-2">Claude et Anthropic&nbsp;: qui fait quoi&nbsp;?</a></li>
+<li><a href="#etape-3">Premiers pas&nbsp;: compte, installation, première conversation</a></li>
+<li><a href="#etape-4">Bien parler à Claude&nbsp;: les bases du prompt</a></li>
+<li><a href="#etape-5">Claude Desktop en mode avancé&nbsp;: projets, connecteurs, artifacts</a></li>
+<li><a href="#etape-6">Agents et skills&nbsp;: quand Claude passe à l'action</a></li>
+<li><a href="#etape-7">Limites et bons réflexes</a></li>
+<li><a href="#etape-8">Aller plus loin</a></li>
+<li><a href="#glossaire">Glossaire</a></li>
+</ol>
+</nav>
+
+<main>
+
+<section id="etape-1">
+<h2>Étape 1 - C'est quoi, une IA&nbsp;? Comprendre les grands modèles de langage</h2>
+
+<p>Commençons par le mot que l'on voit partout&nbsp;: <strong>IA</strong>, pour intelligence artificielle. Une IA est un programme informatique capable d'accomplir des tâches qui demandaient jusqu'ici l'intelligence humaine&nbsp;: comprendre une question, résumer un texte, traduire, reconnaître une photo. Quand ce programme <em>produit</em> du contenu (du texte, des images, du code) au lieu de seulement en chercher ou en trier, on parle d'<strong>IA générative</strong>.</p>
+
+<p>Claude appartient à une famille précise d'IA génératives&nbsp;: les <strong>grands modèles de langage</strong>, souvent appelés <strong>LLM</strong> (de l'anglais <em>large language model</em>). L'image la plus utile pour comprendre est celle d'un autocompleteur surpuissant&nbsp;: le modèle a lu une quantité énorme de textes et prédit la suite la plus probable, mot après mot. C'est le même principe que la suggestion de mots de votre téléphone, poussé à un niveau radicalement supérieur.</p>
+
+<p>D'où vient cette capacité&nbsp;? D'une phase appelée <strong>entraînement</strong>. Pendant des mois, le programme parcourt d'immenses bibliothèques de textes (livres, articles, pages web, code informatique) et apprend, statistiquement, quels mots ont tendance à en suivre quels autres. Il ne stocke pas ces textes comme une base de données qu'on consulterait&nbsp;: il en retient des régularités, un peu comme vous avez appris votre langue maternelle par imprégnation plutôt qu'en mémorisant le dictionnaire.</p>
+
+<p>Le résultat de cet entraînement s'appelle un <strong>modèle</strong>. Voyez-le comme une «&nbsp;version&nbsp;» du cerveau de l'IA&nbsp;: il en existe des plus rapides et des plus puissants, et de nouveaux modèles sortent régulièrement, comme les nouvelles versions d'un logiciel.</p>
+
+<p>Un dernier mot technique pour cette étape&nbsp;: le <strong>token</strong>. Le modèle ne lit pas le texte lettre par lettre ni mot par mot, mais par morceaux de mots d'environ 3 à 4 caractères, appelés tokens. C'est l'unité qu'il lit, produit et compte. Retenez simplement que la longueur d'un texte ou d'une conversation se mesure en tokens, comme une distance se mesure en kilomètres.</p>
+
+<p>Cette mécanique de prédiction explique une chose essentielle&nbsp;: un LLM peut se tromper avec aplomb. Il ne vérifie pas ses affirmations dans une encyclopédie&nbsp;: il produit le texte le plus <em>plausible</em>, pas forcément le plus <em>vrai</em>. La plupart du temps, plausible et vrai coïncident, et la réponse est excellente. Mais il arrive que le modèle affirme avec assurance quelque chose de faux. Gardez cette idée en tête&nbsp;: nous verrons à l'étape 7 comment garder l'esprit critique sans se priver des services de l'IA.</p>
+
+<figure>
+<svg viewBox="0 0 800 340" role="img" aria-labelledby="diag1-title" style="width:100%;height:auto">
+<title id="diag1-title">Comment un grand modèle de langage produit une réponse</title>
+<rect x="25" y="80" width="210" height="90" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="130" y="118" text-anchor="middle" font-size="22" fill="#2b2622">
+<tspan x="130">Textes</tspan>
+<tspan x="130" dy="28">d'entraînement</tspan>
+</text>
+<line x1="238" y1="125" x2="288" y2="125" stroke="#6b625a" stroke-width="3"/>
+<path d="M292,125 l-14,-8 v16 z" fill="#6b625a"/>
+<rect x="295" y="80" width="210" height="90" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="400" y="118" text-anchor="middle" font-size="22" fill="#2b2622">
+<tspan x="400">Modèle</tspan>
+<tspan x="400" dy="28" font-size="17">prédit le mot suivant</tspan>
+</text>
+<line x1="508" y1="125" x2="558" y2="125" stroke="#6b625a" stroke-width="3"/>
+<path d="M562,125 l-14,-8 v16 z" fill="#6b625a"/>
+<rect x="565" y="80" width="210" height="90" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="670" y="132" text-anchor="middle" font-size="22" fill="#2b2622">Réponse</text>
+<line x1="400" y1="172" x2="400" y2="228" stroke="#b03a2e" stroke-width="2" stroke-dasharray="6 5"/>
+<rect x="245" y="230" width="310" height="84" rx="12" fill="#fff" stroke="#b03a2e" stroke-width="2" stroke-dasharray="6 5"/>
+<text x="400" y="265" text-anchor="middle" font-size="19" fill="#b03a2e">
+<tspan x="400">Réponse plausible,</tspan>
+<tspan x="400" dy="26">mais parfois fausse</tspan>
+</text>
+</svg>
+<figcaption>Figure 1 - Le modèle prédit la suite la plus probable, mot après mot&nbsp;: plausible ne veut pas toujours dire vrai.</figcaption>
+</figure>
+
+<p>Si vous souhaitez creuser le fonctionnement interne des LLM, l'article <a href="https://fr.wikipedia.org/wiki/Grand_mod%C3%A8le_de_langage" target="_blank" rel="noopener noreferrer">Grand modèle de langage</a> de Wikipédia en français est une bonne lecture complémentaire.</p>
+
+<aside class="retenir" aria-label="À retenir">
+<h3>Ce qu'il faut retenir</h3>
+<ul>
+<li>Un LLM a appris à prédire la suite la plus probable d'un texte&nbsp;: il ne «&nbsp;sait&nbsp;» pas, il prédit.</li>
+<li>C'est pour cela qu'il peut se tromper avec assurance&nbsp;: plausible ne veut pas dire vrai.</li>
+<li>IA générative, LLM, modèle, token&nbsp;: quatre mots à connaître, tous repris dans le glossaire.</li>
+</ul>
+</aside>
+</section>
+
+<section id="etape-2">
+<h2>Étape 2 - Claude et Anthropic&nbsp;: qui fait quoi&nbsp;?</h2>
+
+<p><strong>Anthropic</strong> est une entreprise américaine d'intelligence artificielle, connue pour placer la sécurité et la fiabilité au centre de sa démarche (site officiel&nbsp;: <a href="https://www.anthropic.com" target="_blank" rel="noopener noreferrer">anthropic.com</a> <span class="lang-note">(en anglais)</span>). <strong>Claude</strong> est son assistant&nbsp;: un grand modèle de langage avec lequel on converse, en français comme en anglais, pour écrire, résumer, traduire, organiser, coder ou simplement réfléchir à voix haute.</p>
+
+<p>Claude se présente sous plusieurs formes, qui partagent le même «&nbsp;cerveau&nbsp;»&nbsp;:</p>
+<ul>
+<li><strong>Le site web</strong>&nbsp;: vous tapez l'adresse claude.ai dans votre navigateur et vous discutez, sans rien installer. La présentation générale du produit se trouve sur <a href="https://claude.com" target="_blank" rel="noopener noreferrer">claude.com</a> <span class="lang-note">(en anglais)</span>.</li>
+<li><strong>Claude Desktop</strong>&nbsp;: l'application à installer sur votre ordinateur, disponible pour macOS et Windows (téléchargement sur <a href="https://claude.com/download" target="_blank" rel="noopener noreferrer">claude.com/download</a> <span class="lang-note">(en anglais)</span>). C'est elle que nous utiliserons dans ce guide.</li>
+<li><strong>Les applis mobiles</strong>&nbsp;: pour iPhone (iOS) et Android, pratiques pour poursuivre une conversation en déplacement.</li>
+<li><strong>Claude Code</strong>&nbsp;: un outil destiné aux développeurs, qui travaille directement dans le terminal ou l'éditeur de code (<a href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">claude.com/product/claude-code</a> <span class="lang-note">(en anglais)</span>).</li>
+<li><strong>L'API</strong>&nbsp;: l'interface qui permet aux développeurs de construire leurs propres applications avec Claude (documentation sur <a href="https://platform.claude.com/docs" target="_blank" rel="noopener noreferrer">platform.claude.com/docs</a> <span class="lang-note">(en anglais)</span>).</li>
+</ul>
+
+<p>Côté modèles, Claude existe en plusieurs versions, de la plus rapide à la plus puissante. Inutile de retenir les numéros&nbsp;: ils changent vite. Pour situer, en juin 2026, le modèle le plus avancé est Claude Fable 5.</p>
+
+<p>Côté formules, il en existe trois principales. La formule <strong>Free</strong> (gratuite) permet de converser sur le web, le mobile et l'ordinateur, avec des limites d'usage. Les formules <strong>Pro</strong> puis <strong>Max</strong>, payantes, offrent davantage d'usage et des fonctions supplémentaires (en juin 2026&nbsp;: Claude Code, le mode recherche approfondie, des projets illimités, entre autres). Le détail à jour se trouve sur la <a href="https://claude.com/pricing" target="_blank" rel="noopener noreferrer">page des formules</a> <span class="lang-note">(en anglais)</span>. Bonne nouvelle&nbsp;: pour suivre ce guide, la formule gratuite suffit.</p>
+
+<figure>
+<svg viewBox="0 0 800 430" role="img" aria-labelledby="diag2-title" style="width:100%;height:auto">
+<title id="diag2-title">L'écosystème Claude&nbsp;: un assistant, plusieurs portes d'entrée</title>
+<line x1="330" y1="185" x2="140" y2="110" stroke="#6b625a" stroke-width="2"/>
+<line x1="470" y1="185" x2="660" y2="110" stroke="#6b625a" stroke-width="2"/>
+<line x1="330" y1="250" x2="140" y2="320" stroke="#6b625a" stroke-width="2"/>
+<line x1="470" y1="250" x2="660" y2="320" stroke="#6b625a" stroke-width="2"/>
+<line x1="400" y1="260" x2="400" y2="330" stroke="#6b625a" stroke-width="2"/>
+<rect x="290" y="180" width="220" height="80" rx="14" fill="#b4532a" stroke="#b4532a" stroke-width="2"/>
+<text x="400" y="214" text-anchor="middle" font-size="24" fill="#fff">
+<tspan x="400">Claude</tspan>
+<tspan x="400" dy="26" font-size="17">par Anthropic</tspan>
+</text>
+<rect x="40" y="40" width="200" height="70" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="140" y="70" text-anchor="middle" font-size="20" fill="#2b2622">
+<tspan x="140">claude.ai</tspan>
+<tspan x="140" dy="24" font-size="16">site web</tspan>
+</text>
+<rect x="560" y="40" width="200" height="70" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="660" y="70" text-anchor="middle" font-size="20" fill="#2b2622">
+<tspan x="660">Claude Desktop</tspan>
+<tspan x="660" dy="24" font-size="16">macOS, Windows</tspan>
+</text>
+<rect x="40" y="320" width="200" height="70" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="140" y="350" text-anchor="middle" font-size="20" fill="#2b2622">
+<tspan x="140">Applis mobiles</tspan>
+<tspan x="140" dy="24" font-size="16">iOS, Android</tspan>
+</text>
+<rect x="560" y="320" width="200" height="70" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="660" y="350" text-anchor="middle" font-size="20" fill="#2b2622">
+<tspan x="660">Claude Code</tspan>
+<tspan x="660" dy="24" font-size="16">développeurs</tspan>
+</text>
+<rect x="300" y="330" width="200" height="70" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="400" y="360" text-anchor="middle" font-size="20" fill="#2b2622">
+<tspan x="400">API</tspan>
+<tspan x="400" dy="24" font-size="16">créer des applis</tspan>
+</text>
+</svg>
+<figcaption>Figure 2 - Un même assistant, plusieurs portes d'entrée&nbsp;: web, ordinateur, mobile, outils développeurs.</figcaption>
+</figure>
+
+<aside class="retenir" aria-label="À retenir">
+<h3>Ce qu'il faut retenir</h3>
+<ul>
+<li>Anthropic est l'entreprise, Claude est l'assistant.</li>
+<li>Le même Claude est accessible par le web, l'application de bureau, le mobile et des outils développeurs.</li>
+<li>La formule gratuite suffit pour débuter&nbsp;; les formules payantes ajoutent de l'usage et des fonctions.</li>
+</ul>
+</aside>
+</section>
+
+<section id="etape-3">
+<h2>Étape 3 - Premiers pas&nbsp;: compte, installation, première conversation</h2>
+
+<p>Place à la pratique. Suivez cette liste dans l'ordre&nbsp;: en un quart d'heure, vous aurez eu votre première conversation avec Claude.</p>
+
+<ol class="checklist">
+<li><strong>Créez un compte.</strong> Ouvrez votre navigateur, tapez l'adresse claude.ai et laissez-vous guider&nbsp;: l'inscription se fait avec une adresse e-mail ou un compte Google. (La présentation du produit est sur <a href="https://claude.com" target="_blank" rel="noopener noreferrer">claude.com</a> <span class="lang-note">(en anglais)</span>.)</li>
+<li><strong>Téléchargez Claude Desktop</strong> depuis <a href="https://claude.com/download" target="_blank" rel="noopener noreferrer">claude.com/download</a> <span class="lang-note">(en anglais)</span>. Choisissez la version macOS ou Windows selon votre ordinateur&nbsp;: il n'y a pas de version Linux.</li>
+<li><strong>Installez l'application et connectez-vous</strong> avec le compte créé au point 1, comme pour n'importe quel logiciel.</li>
+<li><strong>Écrivez votre premier message</strong> (on dit aussi un «&nbsp;prompt&nbsp;», nous y reviendrons à l'étape 4). Copiez-le tel quel&nbsp;: «&nbsp;Présente-toi en trois phrases simples, puis propose-moi trois choses utiles que tu peux faire pour moi cette semaine.&nbsp;»</li>
+<li><strong>Lisez la réponse et répondez une fois.</strong> Choisissez l'une des trois propositions et demandez à Claude de la détailler&nbsp;: vous venez de découvrir le principe de la conversation.</li>
+</ol>
+
+<p>Bon à savoir&nbsp;: avec la formule gratuite, l'usage est limité par sessions, et le compteur se remet à zéro toutes les 5 heures (en juin 2026). Si Claude vous indique que la limite est atteinte, il suffit d'attendre un peu ou de reprendre plus tard.</p>
+
+<p>En cas de blocage à l'une de ces étapes, l'article officiel en français <a href="https://support.claude.com/fr/articles/8114491" target="_blank" rel="noopener noreferrer">Premiers pas avec Claude</a> reprend tout en détail.</p>
+
+<p><strong>Quelle formule choisir pour commencer&nbsp;?</strong> La formule <strong>Free</strong> suffit pour suivre tout ce guide. Passez à <strong>Pro</strong> le jour où vous butez régulièrement sur la limite des 5 heures, ou pour les fonctions supplémentaires vues à l'étape 2 (Claude Code, recherche approfondie, projets illimités)&nbsp;; la formule <strong>Max</strong> ne se justifie que pour un usage vraiment intensif. Les tarifs à jour sont sur la <a href="https://claude.com/pricing" target="_blank" rel="noopener noreferrer">page des formules</a> <span class="lang-note">(en anglais)</span>.</p>
+
+<p><strong>Vos données et l'entraînement des modèles.</strong> Au moment de créer votre compte, Claude vous demande si vos conversations peuvent être utilisées pour améliorer les futurs modèles. C'est un choix, pas une obligation, et vous pouvez en changer à tout moment dans <strong>Paramètres &gt; Confidentialité &gt; Aider à améliorer Claude</strong>. Réglage désactivé, vos nouvelles conversations ne servent pas à l'entraînement&nbsp;; seules les conversations signalées par les filtres de sécurité peuvent encore être examinées. Et les conversations en mode Incognito ne sont jamais utilisées pour l'amélioration, quel que soit le réglage. Le détail est dans les articles en français <a href="https://privacy.claude.com/fr/articles/10023580" target="_blank" rel="noopener noreferrer">Mes données sont-elles utilisées pour l'entraînement du modèle&nbsp;?</a> et <a href="https://privacy.claude.com/fr/articles/12109829" target="_blank" rel="noopener noreferrer">Comment modifier mes paramètres de confidentialité&nbsp;?</a>.</p>
+
+<p><strong>Et la confidentialité&nbsp;?</strong> Quand des conversations sont utilisées pour l'amélioration des modèles, elles sont d'abord dissociées de votre identité, et seul un petit nombre d'employés impliqués dans l'entraînement peut y accéder. Cela reste néanmoins un service en ligne&nbsp;: le bon réflexe, détaillé à l'étape 7, est de ne jamais y coller mots de passe, données médicales ou bancaires, ou documents confidentiels. Pour creuser&nbsp;: l'article en français <a href="https://support.claude.com/fr/articles/8325621" target="_blank" rel="noopener noreferrer">Qui peut consulter mes conversations&nbsp;?</a>.</p>
+
+<aside class="retenir" aria-label="À retenir">
+<h3>Ce qu'il faut retenir</h3>
+<ul>
+<li>Compte, téléchargement, installation, premier message&nbsp;: quatre actions et vous y êtes.</li>
+<li>Claude Desktop existe pour macOS et Windows, pas pour Linux.</li>
+<li>La formule gratuite impose des limites d'usage qui se réinitialisent toutes les 5 heures (en juin 2026)&nbsp;; Pro et Max les repoussent.</li>
+<li>Vos conversations ne servent à entraîner les modèles que si vous l'autorisez&nbsp;: réglage modifiable à tout moment dans Paramètres &gt; Confidentialité.</li>
+</ul>
+</aside>
+</section>
+
+<section id="etape-4">
+<h2>Étape 4 - Bien parler à Claude&nbsp;: les bases du prompt</h2>
+
+<p>À l'étape 3, vous avez envoyé votre premier <strong>prompt</strong>&nbsp;: c'est le nom donné au message, à la consigne que l'on écrit à l'IA. La qualité de la réponse dépend énormément de la qualité du prompt. Bonne nouvelle&nbsp;: bien formuler s'apprend vite, et quatre règles suffisent pour commencer.</p>
+
+<ul>
+<li><strong>Donnez du contexte.</strong> Claude ne sait rien de votre situation tant que vous ne la décrivez pas&nbsp;: qui vous êtes, ce que vous cherchez à faire, ce qui a déjà été tenté.</li>
+<li><strong>Précisez le rôle et le destinataire.</strong> «&nbsp;Explique comme à un débutant&nbsp;», «&nbsp;réponds en tant que professeur de cuisine&nbsp;», «&nbsp;c'est pour un e-mail professionnel&nbsp;»&nbsp;: cela change tout au ton et au niveau de détail.</li>
+<li><strong>Décrivez le résultat attendu.</strong> Longueur, format (liste, tableau, paragraphes), langue, ton&nbsp;: plus c'est précis, moins Claude devine.</li>
+<li><strong>Itérez.</strong> Vous pouvez répondre et préciser, c'est une conversation&nbsp;: «&nbsp;plus court&nbsp;», «&nbsp;avec un exemple&nbsp;», «&nbsp;recommence en tutoyant&nbsp;».</li>
+</ul>
+
+<p>Rien ne vaut un avant/après pour voir la différence&nbsp;:</p>
+
+<div class="exemple">
+<p class="avant"><strong>Prompt vague&nbsp;:</strong> «&nbsp;Parle-moi des impôts.&nbsp;»</p>
+<p class="apres"><strong>Prompt efficace&nbsp;:</strong> «&nbsp;Explique-moi, comme à un débutant, comment fonctionne le prélèvement à la source en France. Donne un exemple chiffré simple.&nbsp;»</p>
+</div>
+
+<div class="exemple">
+<p class="avant"><strong>Prompt vague&nbsp;:</strong> «&nbsp;Écris un mail à mon propriétaire.&nbsp;»</p>
+<p class="apres"><strong>Prompt efficace&nbsp;:</strong> «&nbsp;Écris un e-mail courtois mais ferme à mon propriétaire&nbsp;: la fuite du robinet de la salle de bain, signalée par téléphone le 12 mai, n'est toujours pas réparée. Demande une date d'intervention. Dix lignes maximum.&nbsp;»</p>
+</div>
+
+<p>Le prompt vague n'est pas «&nbsp;faux&nbsp;», mais il oblige Claude à deviner ce qui vous intéresse. Le prompt efficace donne le contexte, le destinataire et le format attendu&nbsp;: la réponse est utilisable du premier coup. Pour aller beaucoup plus loin, Anthropic publie un <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview" target="_blank" rel="noopener noreferrer">guide complet de rédaction de prompts</a> <span class="lang-note">(en anglais)</span>.</p>
+
+<aside class="retenir" aria-label="À retenir">
+<h3>Ce qu'il faut retenir</h3>
+<ul>
+<li>Un bon prompt donne le contexte, le destinataire et le résultat attendu.</li>
+<li>La première réponse n'est pas définitive&nbsp;: répondez, précisez, ajustez.</li>
+<li>Plus vous êtes précis, moins Claude devine, meilleure est la réponse.</li>
+</ul>
+</aside>
+</section>
+
+<section id="etape-5">
+<h2>Étape 5 - Claude Desktop en mode avancé&nbsp;: projets, connecteurs, artifacts</h2>
+
+<p>Claude Desktop devient vraiment intéressant quand on dépasse la simple conversation. Voici les fonctions à connaître, dans l'ordre où vous en aurez probablement besoin.</p>
+
+<p><strong>Les projets.</strong> Un <strong>projet</strong> est un espace de travail persistant&nbsp;: il regroupe ses propres fichiers, liens, instructions et sa propre mémoire. Créez par exemple un projet «&nbsp;Recherche d'appartement&nbsp;» avec vos critères et vos annonces&nbsp;: chaque nouvelle conversation dans ce projet repart avec tout ce contexte, sans avoir à le réexpliquer.</p>
+
+<p><strong>Les connecteurs et le MCP.</strong> Par défaut, Claude ne voit que ce que vous lui écrivez ou envoyez. Les <strong>connecteurs</strong> lui permettent de se brancher sur vos outils&nbsp;: vos fichiers, votre agenda, des services en ligne. Ils reposent sur le <strong>MCP</strong> (Model Context Protocol), un standard ouvert souvent décrit comme le «&nbsp;port USB-C de l'IA&nbsp;»&nbsp;: une prise universelle qui permet de brancher n'importe quel outil compatible (site officiel&nbsp;: <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreferrer">modelcontextprotocol.io</a> <span class="lang-note">(en anglais)</span>). Concrètement, dans Claude Desktop, les connecteurs locaux s'installent en un clic depuis le panneau Extensions de l'application, puis s'activent ou se désactivent dans le panneau Connecteurs. Les connecteurs distants (services en ligne) demandent une formule payante (en juin 2026).</p>
+
+<figure>
+<svg viewBox="0 0 800 380" role="img" aria-labelledby="diag3-title" style="width:100%;height:auto">
+<title id="diag3-title">Claude Desktop relié à vos outils par des connecteurs MCP</title>
+<line x1="270" y1="190" x2="530" y2="75" stroke="#6b625a" stroke-width="2"/>
+<line x1="270" y1="190" x2="530" y2="190" stroke="#6b625a" stroke-width="2"/>
+<line x1="270" y1="190" x2="530" y2="305" stroke="#6b625a" stroke-width="2"/>
+<rect x="305" y="160" width="190" height="44" rx="8" fill="#fbf9f6" stroke="#6b625a" stroke-width="1"/>
+<text x="400" y="188" text-anchor="middle" font-size="18" fill="#6b625a">connecteurs (MCP)</text>
+<rect x="40" y="140" width="230" height="100" rx="14" fill="#b4532a" stroke="#b4532a" stroke-width="2"/>
+<text x="155" y="196" text-anchor="middle" font-size="24" fill="#fff">Claude Desktop</text>
+<rect x="530" y="40" width="230" height="70" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="645" y="82" text-anchor="middle" font-size="20" fill="#2b2622">Vos fichiers</text>
+<rect x="530" y="155" width="230" height="70" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="645" y="197" text-anchor="middle" font-size="20" fill="#2b2622">Votre agenda</text>
+<rect x="530" y="270" width="230" height="70" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="645" y="312" text-anchor="middle" font-size="20" fill="#2b2622">Outils web</text>
+</svg>
+<figcaption>Figure 3 - Les connecteurs (MCP) branchent Claude Desktop sur vos fichiers, votre agenda et vos outils en ligne.</figcaption>
+</figure>
+
+<p><strong>L'envoi de fichiers.</strong> Vous pouvez joindre des fichiers (documents, PDF, images, tableaux) directement dans une conversation ou dans un projet&nbsp;: Claude les lit et peut les résumer, les comparer ou répondre à des questions dessus.</p>
+
+<p><strong>Les artifacts.</strong> Quand vous demandez à Claude de produire quelque chose de structuré (un document, un tableau de bord, une petite application), il le crée dans un panneau séparé appelé <strong>artifact</strong>, que vous pouvez garder, modifier et partager. Tout est expliqué dans l'article en français <a href="https://support.claude.com/fr/articles/9487310" target="_blank" rel="noopener noreferrer">Qu'est-ce que les artifacts&nbsp;?</a>.</p>
+
+<p><strong>Les atouts propres à l'application de bureau.</strong> Par rapport au site web, Claude Desktop peut accéder à des fichiers de votre ordinateur, se lancer au démarrage, rester disponible dans la barre des tâches ou la barre de menus, répondre à des raccourcis clavier globaux et faire tourner des connecteurs MCP locaux. Et rien n'est enfermé dans l'application&nbsp;: conversations, projets et mémoire se synchronisent entre vos appareils dès que vous êtes connecté.</p>
+
+<p><strong>Claude Cowork.</strong> L'application de bureau embarque aussi <strong>Cowork</strong>, un mode où Claude enchaîne lui-même plusieurs étapes pour accomplir une tâche complète sans écrire de code&nbsp;: trier un dossier de fichiers, préparer un comparatif, remplir un document type. C'est le même moteur que Claude Code, mis au service des tâches non techniques. Présentation dans l'article en français <a href="https://support.claude.com/fr/articles/13345190" target="_blank" rel="noopener noreferrer">Premiers pas avec Claude Cowork</a>.</p>
+
+<aside class="retenir" aria-label="À retenir">
+<h3>Ce qu'il faut retenir</h3>
+<ul>
+<li>Les projets conservent fichiers, instructions et mémoire sur un sujet donné.</li>
+<li>Les connecteurs (MCP) branchent Claude sur vos outils&nbsp;; les artifacts sont ses productions, dans un panneau à part.</li>
+<li>L'application de bureau ajoute l'accès aux fichiers locaux, les raccourcis et les connecteurs locaux, et tout se synchronise.</li>
+</ul>
+</aside>
+</section>
+
+<section id="etape-6">
+<h2>Étape 6 - Agents et skills&nbsp;: quand Claude passe à l'action</h2>
+
+<p>Jusqu'ici, Claude vous a surtout <em>répondu</em>. Cette étape présente deux notions qui reviennent partout dans le monde de l'IA en ce moment&nbsp;: l'<strong>agent</strong>, une IA qui agit au lieu de seulement répondre, et la <strong>skill</strong> (le mot anglais est resté, l'interface française de Claude le traduit par «&nbsp;compétence&nbsp;»), le savoir-faire que l'on peut lui ajouter. Bonne nouvelle&nbsp;: vous avez déjà croisé les deux sans le savoir.</p>
+
+<p><strong>C'est quoi, un agent&nbsp;?</strong> Dans une conversation classique, vous posez une question, l'IA répond, et c'est à vous de jouer. Un agent, lui, reçoit un <em>objectif</em> et travaille en boucle pour l'atteindre&nbsp;: il réfléchit à un plan, agit avec un outil (lire un fichier, chercher sur le web, écrire un document), observe le résultat, corrige le tir, et recommence jusqu'à ce que la tâche soit terminée. L'image la plus simple&nbsp;: l'assistant classique est un conseiller à qui l'on demande comment faire&nbsp;; l'agent est un stagiaire de confiance à qui l'on confie le dossier complet.</p>
+
+<figure>
+<svg viewBox="0 0 800 430" role="img" aria-labelledby="diag5-title" style="width:100%;height:auto">
+<title id="diag5-title">La boucle d'un agent&nbsp;: planifier, agir, observer, recommencer jusqu'au résultat</title>
+<line x1="200" y1="90" x2="263" y2="90" stroke="#6b625a" stroke-width="3"/>
+<path d="M267,90 l-14,-8 v16 z" fill="#6b625a"/>
+<line x1="480" y1="90" x2="543" y2="90" stroke="#6b625a" stroke-width="3"/>
+<path d="M547,90 l-14,-8 v16 z" fill="#6b625a"/>
+<line x1="660" y1="130" x2="660" y2="273" stroke="#6b625a" stroke-width="3"/>
+<path d="M660,277 l-8,-14 h16 z" fill="#6b625a"/>
+<line x1="550" y1="320" x2="375" y2="320" stroke="#b4532a" stroke-width="3"/>
+<line x1="375" y1="320" x2="375" y2="138" stroke="#b4532a" stroke-width="3"/>
+<path d="M375,134 l-8,14 h16 z" fill="#b4532a"/>
+<text x="462" y="308" text-anchor="middle" font-size="16" fill="#b4532a">pas terminé&nbsp;?</text>
+<line x1="310" y1="130" x2="310" y2="320" stroke="#2e7d4f" stroke-width="3"/>
+<line x1="310" y1="320" x2="208" y2="320" stroke="#2e7d4f" stroke-width="3"/>
+<path d="M204,320 l14,-8 v16 z" fill="#2e7d4f"/>
+<text x="296" y="230" text-anchor="end" font-size="16" fill="#2e7d4f">tâche terminée</text>
+<rect x="30" y="50" width="170" height="80" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="115" y="98" text-anchor="middle" font-size="20" fill="#2b2622">Votre objectif</text>
+<rect x="270" y="50" width="210" height="80" rx="12" fill="#b4532a" stroke="#b4532a" stroke-width="2"/>
+<text x="375" y="84" text-anchor="middle" font-size="20" fill="#fff">
+<tspan x="375">Claude réfléchit</tspan>
+<tspan x="375" dy="26">et planifie</tspan>
+</text>
+<rect x="550" y="50" width="220" height="80" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="660" y="84" text-anchor="middle" font-size="20" fill="#2b2622">
+<tspan x="660">Agit avec un outil</tspan>
+<tspan x="660" dy="26" font-size="15">fichier, web, document...</tspan>
+</text>
+<rect x="550" y="280" width="220" height="80" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="660" y="328" text-anchor="middle" font-size="20" fill="#2b2622">Observe le résultat</text>
+<rect x="30" y="280" width="170" height="80" rx="12" fill="#fff" stroke="#2e7d4f" stroke-width="3"/>
+<text x="115" y="328" text-anchor="middle" font-size="20" fill="#2e7d4f">Résultat final</text>
+</svg>
+<figcaption>Figure 5 - Un agent travaille en boucle&nbsp;: planifier, agir, observer et recommencer jusqu'à ce que la tâche soit terminée.</figcaption>
+</figure>
+
+<p>Vous avez déjà vu des agents à l'œuvre&nbsp;: <strong>Cowork</strong> (étape 5) est le mode agent de Claude Desktop pour les tâches du quotidien, le mode <strong>recherche approfondie</strong> enchaîne des dizaines de recherches web avant de rédiger sa synthèse, et <strong>Claude Code</strong> est un agent spécialisé dans le code. Les trois pièces se complètent ainsi&nbsp;: le <em>modèle</em> est le cerveau de l'agent, les <em>connecteurs MCP</em> (étape 5) sont ses mains pour toucher vos outils, et les skills, que voici, sont son savoir-faire.</p>
+
+<p><strong>C'est quoi, une skill&nbsp;?</strong> Une skill est un dossier d'instructions (parfois accompagné de petits scripts et de modèles de documents) que Claude charge automatiquement quand la tâche s'y prête. Pensez à un classeur de fiches recettes&nbsp;: Claude n'a pas besoin de les lire en permanence, il sort la bonne fiche au bon moment. Il en existe trois familles&nbsp;: les skills fournies par Anthropic (créer de vrais fichiers Excel, Word, PowerPoint ou PDF), celles que vous créez vous-même, et celles publiées par des entreprises partenaires. Tout est expliqué dans l'article en français <a href="https://support.claude.com/fr/articles/12512176" target="_blank" rel="noopener noreferrer">Qu'est-ce que les compétences&nbsp;?</a>.</p>
+
+<p><strong>Des exemples concrets&nbsp;:</strong></p>
+<ul>
+<li><strong>Charte graphique d'entreprise</strong>&nbsp;: la skill contient vos couleurs, polices, modèles de slides et règles de ton&nbsp;; chaque présentation ou document produit par Claude respecte la charte sans qu'on ait à la rappeler.</li>
+<li><strong>Compte rendu de réunion</strong>&nbsp;: vous y mettez votre trame habituelle (participants, décisions, actions, échéances)&nbsp;; Claude transforme des notes brutes en compte rendu prêt à envoyer, toujours au même format.</li>
+<li><strong>Notes de frais</strong>&nbsp;: la skill décrit vos catégories, plafonds et le format de votre tableau&nbsp;; vous déposez vos reçus, Claude remplit le fichier Excel du mois selon vos règles.</li>
+<li><strong>Analyse de données maison</strong>&nbsp;: vos conventions de calcul, vos indicateurs, vos seuils d'alerte&nbsp;; Claude analyse chaque nouvel export avec la même méthode qu'un collègue déjà formé.</li>
+<li><strong>Candidatures</strong>&nbsp;: votre CV, vos expériences clés et vos exigences (ton, longueur)&nbsp;; pour chaque offre d'emploi collée dans la conversation, Claude rédige une lettre de motivation adaptée, sans réinventer votre parcours.</li>
+<li><strong>Devis de freelance</strong>&nbsp;: vos prestations, tarifs, conditions et mentions obligatoires&nbsp;; vous décrivez la demande du client, Claude sort un devis chiffré au format maison.</li>
+<li><strong>Publications LinkedIn</strong>&nbsp;: votre ton, vos longueurs types, vos sujets et ce que vous refusez de faire (pas d'emojis, pas de clickbait)&nbsp;; chaque brouillon de post sonne comme vous, pas comme un robot.</li>
+<li><strong>Skills partenaires</strong>&nbsp;: des entreprises comme Notion, Figma ou Atlassian publient des skills officielles pour que Claude utilise correctement leurs outils.</li>
+</ul>
+
+<p><strong>Et sous le capot&nbsp;?</strong> Une skill n'a rien de magique&nbsp;: c'est un dossier contenant un fichier texte nommé <code>SKILL.md</code>. Quelques lignes d'en-tête entre les <code>---</code> donnent le nom et la description (c'est grâce à elle que Claude sait <em>quand</em> charger la skill), puis viennent les instructions, en français courant. La skill «&nbsp;compte rendu de réunion&nbsp;» ci-dessus pourrait ressembler à ceci&nbsp;:</p>
+
+<pre><code>---
+name: compte-rendu-reunion
+description: Transforme des notes brutes en compte rendu standard.
+  À utiliser dès que je fournis des notes de réunion.
+---
+
+# Compte rendu de réunion
+
+1. Commence par la date, les participants et l'objet.
+2. Résume les décisions prises, une puce par décision.
+3. Termine par un tableau Action / Responsable / Échéance.
+4. Ton neutre et professionnel, une page maximum.</code></pre>
+
+<p>C'est tout&nbsp;: pas de programmation obligatoire, des instructions écrites comme on briefe un collègue. Les skills plus avancées peuvent embarquer des scripts et des modèles de fichiers, mais celle-ci fonctionnerait telle quelle.</p>
+
+<p><strong>Comment construire les vôtres&nbsp;?</strong> La méthode la plus simple ne demande aucun code&nbsp;: demandez à Claude de fabriquer la skill pour vous, en conversant.</p>
+
+<ol class="checklist">
+<li><strong>Décrivez la skill voulue.</strong> Par exemple&nbsp;: «&nbsp;Je veux une skill qui transforme mes notes de réunion en compte rendu standard.&nbsp;» Joignez vos documents&nbsp;: une trame, deux ou trois exemples réussis, votre charte si elle existe.</li>
+<li><strong>Répondez à ses questions.</strong> Claude vous interroge sur votre façon de faire&nbsp;: ce qui doit toujours apparaître, ce qui est interdit, les cas particuliers.</li>
+<li><strong>Claude fabrique le paquet.</strong> Il rédige le fichier <code>SKILL.md</code>, range vos documents à côté, écrit les éventuels scripts, et vous livre la skill prête à installer.</li>
+<li><strong>Installez et testez.</strong> Importez la skill dans <strong>Personnaliser &gt; Compétences</strong>, lancez une demande qui devrait la déclencher, et vérifiez que Claude la charge bien.</li>
+</ol>
+
+<p>Le tutoriel officiel pas à pas&nbsp;: <a href="https://claude.com/resources/tutorials/how-to-create-a-skill-with-claude-through-conversation" target="_blank" rel="noopener noreferrer">How to create a skill with Claude through conversation</a> <span class="lang-note">(en anglais)</span>.</p>
+
+<p><strong>À la main, pour les bricoleurs.</strong> Un dossier, un fichier <code>SKILL.md</code>, et c'est une skill. Deux règles côté en-tête&nbsp;: un nom de 64 caractères maximum, et surtout une description de 200 caractères maximum, car c'est elle que Claude lit pour décider <em>quand</em> charger la skill&nbsp;: dites-y explicitement dans quelles situations l'utiliser. Ajoutez à côté les fichiers dont les instructions ont besoin, par exemple&nbsp;:</p>
+
+<pre><code>email-pro/
+├── SKILL.md          (les instructions, comme ci-dessus)
+├── signature.txt     (votre signature)
+└── modele.md         (la trame de vos e-mails)</code></pre>
+
+<p>Les instructions peuvent alors dire «&nbsp;suis la trame de <code>modele.md</code> et termine par le contenu de <code>signature.txt</code>&nbsp;». Compressez le dossier en ZIP (le dossier de la skill doit être la racine de l'archive) et importez-le dans <strong>Personnaliser &gt; Compétences</strong>. Le guide complet en français&nbsp;: <a href="https://support.claude.com/fr/articles/12512198" target="_blank" rel="noopener noreferrer">Comment créer des compétences personnalisées</a>.</p>
+
+<p>Trois bonnes pratiques pour finir&nbsp;: une skill = une tâche (mieux vaut trois petites skills précises qu'une énorme fourre-tout)&nbsp;; une description qui dit quand l'utiliser («&nbsp;À utiliser dès que...&nbsp;»)&nbsp;; et un test en conditions réelles&nbsp;: si Claude ne charge pas la skill au bon moment, c'est presque toujours la description qu'il faut préciser.</p>
+
+<p><strong>Comment les activer&nbsp;?</strong> Les skills sont disponibles sur toutes les formules, y compris la formule gratuite (en juin 2026). Il faut d'abord activer l'exécution de code dans les paramètres, puis passer par <strong>Personnaliser &gt; Compétences</strong> (le nom du menu en français) pour activer celles qui vous intéressent. Le mode d'emploi pas à pas est dans l'article en français <a href="https://support.claude.com/fr/articles/12512180" target="_blank" rel="noopener noreferrer">Utiliser les compétences dans Claude</a>. Un réflexe de prudence&nbsp;: n'installez que des skills provenant de sources de confiance, comme vous le feriez pour un logiciel.</p>
+
+<p><strong>Essayez tout de suite.</strong> Une fois les skills activées, copiez ce prompt&nbsp;: «&nbsp;Crée un fichier Excel de budget mensuel pour un foyer de deux personnes, avec une ligne par catégorie de dépense et des formules qui calculent les totaux.&nbsp;» Claude détecte que la tâche relève de la skill Excel, la charge tout seul et produit un vrai fichier <code>.xlsx</code> à télécharger. Vous pouvez aussi créer votre propre skill en discutant&nbsp;: expliquez à Claude votre façon de faire (votre trame de compte rendu, votre style d'e-mail) et demandez-lui d'en faire une skill réutilisable.</p>
+
+<p>Pour la culture générale&nbsp;: l'annonce officielle des skills, <a href="https://claude.com/blog/skills" target="_blank" rel="noopener noreferrer">Introducing Agent Skills</a> <span class="lang-note">(en anglais)</span>, explique pourquoi elles fonctionnent partout, du site web à Claude Code.</p>
+
+<aside class="retenir" aria-label="À retenir">
+<h3>Ce qu'il faut retenir</h3>
+<ul>
+<li>Un assistant répond&nbsp;; un agent reçoit un objectif et enchaîne lui-même les étapes jusqu'au résultat.</li>
+<li>Modèle = cerveau, connecteurs = mains, skills = savoir-faire chargé au bon moment.</li>
+<li>Les skills s'activent dans le menu Personnaliser &gt; Compétences&nbsp;; n'installez que des sources de confiance.</li>
+</ul>
+</aside>
+</section>
+
+<section id="etape-7">
+<h2>Étape 7 - Limites et bons réflexes</h2>
+
+<p>Souvenez-vous de l'étape 1&nbsp;: un LLM prédit le texte le plus plausible, il ne consulte pas une encyclopédie. Quand la prédiction part dans le décor, on parle d'<strong>hallucination</strong>&nbsp;: l'IA invente une réponse plausible mais fausse, et la présente avec assurance. Une référence de livre inexistante, une date erronée, une fonctionnalité imaginaire d'un logiciel&nbsp;: tout peut sembler parfaitement crédible. Ce n'est pas un mensonge, c'est l'autocompleteur qui complète trop bien.</p>
+
+<p>Deuxième limite&nbsp;: la <strong>fenêtre de contexte</strong>, la «&nbsp;mémoire de travail&nbsp;» d'une conversation. C'est tout ce que le modèle peut prendre en compte d'un coup. Elle est grande, mais pas infinie&nbsp;: dans une très longue conversation, le modèle finit par «&nbsp;oublier&nbsp;» le début. Deux réflexes pratiques&nbsp;: ouvrez une nouvelle conversation pour chaque nouveau sujet, et confiez le contexte durable à un projet (étape 5), conçu pour cela.</p>
+
+<figure>
+<svg viewBox="0 0 800 260" role="img" aria-labelledby="diag4-title" style="width:100%;height:auto">
+<title id="diag4-title">La fenêtre de contexte couvre les derniers messages, les plus anciens en sortent</title>
+<rect x="30" y="110" width="110" height="60" rx="8" fill="#e3dcd2" stroke="#6b625a" stroke-width="1" opacity="0.5"/>
+<text x="85" y="146" text-anchor="middle" font-size="16" fill="#6b625a" opacity="0.7">Message 1</text>
+<rect x="150" y="110" width="110" height="60" rx="8" fill="#e3dcd2" stroke="#6b625a" stroke-width="1" opacity="0.5"/>
+<text x="205" y="146" text-anchor="middle" font-size="16" fill="#6b625a" opacity="0.7">Message 2</text>
+<rect x="270" y="110" width="110" height="60" rx="8" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="325" y="146" text-anchor="middle" font-size="16" fill="#2b2622">Message 3</text>
+<rect x="390" y="110" width="110" height="60" rx="8" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="445" y="146" text-anchor="middle" font-size="16" fill="#2b2622">Message 4</text>
+<rect x="510" y="110" width="110" height="60" rx="8" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="565" y="146" text-anchor="middle" font-size="16" fill="#2b2622">Message 5</text>
+<rect x="630" y="110" width="110" height="60" rx="8" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="685" y="146" text-anchor="middle" font-size="16" fill="#2b2622">Message 6</text>
+<rect x="255" y="92" width="500" height="96" rx="12" fill="none" stroke="#b4532a" stroke-width="3" stroke-dasharray="8 6"/>
+<text x="505" y="66" text-anchor="middle" font-size="20" fill="#b4532a">Fenêtre de contexte</text>
+<text x="145" y="225" text-anchor="middle" font-size="17" fill="#6b625a">
+<tspan x="145">messages sortis</tspan>
+<tspan x="145" dy="22">de la mémoire</tspan>
+</text>
+</svg>
+<figcaption>Figure 4 - La fenêtre de contexte glisse&nbsp;: dans une conversation très longue, les premiers messages finissent par en sortir.</figcaption>
+</figure>
+
+<p>Troisième réflexe&nbsp;: la confidentialité. Ne collez pas dans une conversation des données sensibles, personnelles ou professionnelles, que vous n'écririez pas dans un e-mail adressé à un inconnu&nbsp;: mots de passe, numéros de carte ou de sécurité sociale, dossiers médicaux, documents confidentiels de votre entreprise.</p>
+
+<p>Enfin, la vérification. Pour tout fait qui compte (un chiffre, une date, une référence, un conseil médical ou juridique), prenez trois habitudes&nbsp;: demandez ses sources à Claude, recoupez avec une recherche classique, et quand Claude utilise la recherche web, ouvrez les liens qu'il cite plutôt que de croire le résumé sur parole. Utilisé ainsi, Claude reste un formidable assistant&nbsp;: c'est vous qui restez le rédacteur en chef.</p>
+
+<aside class="retenir" aria-label="À retenir">
+<h3>Ce qu'il faut retenir</h3>
+<ul>
+<li>Une hallucination est une erreur affirmée avec assurance&nbsp;: vérifiez les faits importants.</li>
+<li>Nouveau sujet, nouvelle conversation&nbsp;; contexte durable, projet.</li>
+<li>Ne partagez jamais ce que vous ne mettriez pas dans un e-mail à un inconnu.</li>
+</ul>
+</aside>
+</section>
+
+<section id="etape-8">
+<h2>Étape 8 - Aller plus loin</h2>
+
+<p>Vous avez maintenant toutes les bases. Selon vos envies, voici les directions possibles&nbsp;:</p>
+
+<ul>
+<li><strong>Coder avec l'IA</strong>&nbsp;: Claude Code travaille dans le terminal ou l'éditeur de code&nbsp;: <a href="https://claude.com/product/claude-code" target="_blank" rel="noopener noreferrer">claude.com/product/claude-code</a> <span class="lang-note">(en anglais)</span>.</li>
+<li><strong>Construire avec l'API</strong>&nbsp;: la documentation développeur pour créer vos propres applications&nbsp;: <a href="https://platform.claude.com/docs" target="_blank" rel="noopener noreferrer">platform.claude.com/docs</a> <span class="lang-note">(en anglais)</span>.</li>
+<li><strong>Comprendre les agents en profondeur</strong>&nbsp;: l'article de référence d'Anthropic sur la conception d'agents, <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank" rel="noopener noreferrer">Building Effective AI Agents</a> <span class="lang-note">(en anglais, technique)</span>.</li>
+<li><strong>Suivre des cours gratuits d'Anthropic</strong>&nbsp;: l'Anthropic Academy sur <a href="https://www.anthropic.com/learn" target="_blank" rel="noopener noreferrer">anthropic.com/learn</a> et <a href="https://anthropic.skilljar.com" target="_blank" rel="noopener noreferrer">anthropic.skilljar.com</a> <span class="lang-note">(en anglais)</span>.</li>
+<li><strong>Comprendre l'IA en français</strong>&nbsp;: «&nbsp;Objectif IA&nbsp;», cours gratuit de 6 heures d'OpenClassrooms et de l'Institut Montaigne&nbsp;: <a href="https://openclassrooms.com/fr/courses/6417031-objectif-ia-initiez-vous-a-lintelligence-artificielle" target="_blank" rel="noopener noreferrer">Objectif IA sur OpenClassrooms</a>.</li>
+<li><strong>Trouver une réponse pratique</strong>&nbsp;: le centre d'aide officiel en français&nbsp;: <a href="https://support.claude.com/fr/" target="_blank" rel="noopener noreferrer">support.claude.com/fr</a> (le <a href="https://support.claude.com" target="_blank" rel="noopener noreferrer">centre d'aide</a> existe en 12 langues).</li>
+</ul>
+
+<p>Le plus important reste la pratique&nbsp;: utilisez Claude pour une vraie tâche dès cette semaine, un courrier à écrire, un document à résumer, un sujet à défricher. C'est en conversant qu'on apprend à converser. Bonne route&nbsp;!</p>
+</section>
+
+<section id="glossaire">
+<h2>Glossaire</h2>
+
+<dl>
+<dt>IA / IA générative</dt>
+<dd>Programme qui produit du contenu (texte, images, code) au lieu de seulement en chercher.</dd>
+<dt>LLM (grand modèle de langage)</dt>
+<dd>Programme entraîné sur d'énormes quantités de texte pour prédire la suite d'une phrase.</dd>
+<dt>Modèle</dt>
+<dd>Une «&nbsp;version&nbsp;» du cerveau de l'IA&nbsp;; il en existe des plus rapides et des plus puissants.</dd>
+<dt>Prompt</dt>
+<dd>Le message ou la consigne que l'on écrit à l'IA.</dd>
+<dt>Token</dt>
+<dd>Morceau de mot&nbsp;; l'unité que le modèle lit et compte (environ 3 à 4 caractères).</dd>
+<dt>Fenêtre de contexte</dt>
+<dd>La «&nbsp;mémoire de travail&nbsp;» d'une conversation&nbsp;: tout ce que le modèle peut prendre en compte d'un coup&nbsp;; au-delà, il «&nbsp;oublie&nbsp;» le début.</dd>
+<dt>Hallucination</dt>
+<dd>Quand l'IA invente une réponse plausible mais fausse, avec assurance.</dd>
+<dt>MCP / connecteur</dt>
+<dd>Prise standard («&nbsp;port USB-C de l'IA&nbsp;») qui permet à Claude de se brancher sur vos outils (fichiers, agenda, services en ligne).</dd>
+<dt>Agent</dt>
+<dd>IA qui ne se contente pas de répondre&nbsp;: elle reçoit un objectif et enchaîne elle-même les étapes (planifier, utiliser des outils, vérifier) jusqu'au résultat.</dd>
+<dt>Skill (compétence)</dt>
+<dd>Dossier d'instructions que Claude charge automatiquement quand la tâche s'y prête&nbsp;: son savoir-faire pour un type de tâche précis.</dd>
+<dt>Artifact</dt>
+<dd>Document ou application que Claude crée dans un panneau à part, que l'on peut garder et partager.</dd>
+<dt>Projet</dt>
+<dd>Espace de travail persistant regroupant fichiers, instructions et conversations sur un même sujet.</dd>
+</dl>
+</section>
+
+</main>
+
+<footer>
+<p>Guide rédigé en juin 2026. Tous les liens externes ont été vérifiés le 10 juin 2026. Les tarifs et noms de modèles évoluent&nbsp;: vérifiez sur les pages officielles.</p>
+</footer>
+</body>
+</html>
