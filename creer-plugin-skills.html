@@ -8,9 +8,14 @@
 </head>
 <body>
 <nav class="site-nav" aria-label="Navigation du site">
+<div class="nav-inner">
 <span class="nav-title">Apprendre l'IA</span>
+<button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+<div class="nav-links">
 <a href="index.html">Guide pas à pas</a>
 <a href="creer-plugin-skills.html" class="active">Créer un plugin de skills</a>
+</div>
+</div>
 </nav>
 
 <header>
@@ -382,33 +387,33 @@ description: Rédige un courrier formel (lettre officielle) avec mise en page
 <figure>
 <svg viewBox="0 0 800 320" role="img" aria-labelledby="diag-plugin-title" style="width:100%;height:auto">
 <title id="diag-plugin-title">Les quatre étapes pour créer et partager un plugin de skills</title>
-<rect x="20" y="60" width="170" height="80" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
-<text x="105" y="94" text-anchor="middle" font-size="18" fill="#2b2622">
+<rect x="20" y="60" width="170" height="80" rx="12" fill="#e0eaff" stroke="#2563eb" stroke-width="2"/>
+<text x="105" y="94" text-anchor="middle" font-size="18" fill="#1a1a2e">
 <tspan x="105">1. Écrire</tspan>
 <tspan x="105" dy="24" font-size="14">les fichiers SKILL.md</tspan>
 </text>
-<line x1="194" y1="100" x2="218" y2="100" stroke="#6b625a" stroke-width="3"/>
-<path d="M222,100 l-14,-8 v16 z" fill="#6b625a"/>
-<rect x="225" y="60" width="170" height="80" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
-<text x="310" y="94" text-anchor="middle" font-size="18" fill="#2b2622">
+<line x1="194" y1="100" x2="218" y2="100" stroke="#5a6178" stroke-width="3"/>
+<path d="M222,100 l-14,-8 v16 z" fill="#5a6178"/>
+<rect x="225" y="60" width="170" height="80" rx="12" fill="#e0eaff" stroke="#2563eb" stroke-width="2"/>
+<text x="310" y="94" text-anchor="middle" font-size="18" fill="#1a1a2e">
 <tspan x="310">2. Organiser</tspan>
 <tspan x="310" dy="24" font-size="14">un dossier par skill</tspan>
 </text>
-<line x1="399" y1="100" x2="423" y2="100" stroke="#6b625a" stroke-width="3"/>
-<path d="M427,100 l-14,-8 v16 z" fill="#6b625a"/>
-<rect x="430" y="60" width="170" height="80" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
-<text x="515" y="94" text-anchor="middle" font-size="18" fill="#2b2622">
+<line x1="399" y1="100" x2="423" y2="100" stroke="#5a6178" stroke-width="3"/>
+<path d="M427,100 l-14,-8 v16 z" fill="#5a6178"/>
+<rect x="430" y="60" width="170" height="80" rx="12" fill="#e0eaff" stroke="#2563eb" stroke-width="2"/>
+<text x="515" y="94" text-anchor="middle" font-size="18" fill="#1a1a2e">
 <tspan x="515">3. Compresser</tspan>
 <tspan x="515" dy="24" font-size="14">en fichier ZIP</tspan>
 </text>
-<line x1="604" y1="100" x2="628" y2="100" stroke="#6b625a" stroke-width="3"/>
-<path d="M632,100 l-14,-8 v16 z" fill="#6b625a"/>
-<rect x="635" y="60" width="145" height="80" rx="12" fill="#b4532a" stroke="#b4532a" stroke-width="2"/>
+<line x1="604" y1="100" x2="628" y2="100" stroke="#5a6178" stroke-width="3"/>
+<path d="M632,100 l-14,-8 v16 z" fill="#5a6178"/>
+<rect x="635" y="60" width="145" height="80" rx="12" fill="#2563eb" stroke="#2563eb" stroke-width="2"/>
 <text x="707" y="94" text-anchor="middle" font-size="18" fill="#fff">
 <tspan x="707">4. Importer</tspan>
 <tspan x="707" dy="24" font-size="14" fill="#fff">dans Claude</tspan>
 </text>
-<line x1="707" y1="144" x2="707" y2="185" stroke="#6b625a" stroke-width="2"/>
+<line x1="707" y1="144" x2="707" y2="185" stroke="#5a6178" stroke-width="2"/>
 <rect x="575" y="188" width="265" height="55" rx="10" fill="#e8f4ec" stroke="#2e7d4f" stroke-width="2"/>
 <text x="707" y="222" text-anchor="middle" font-size="16" fill="#2e7d4f">Partager le ZIP avec l'équipe</text>
 </svg>
