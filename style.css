@@ -1,0 +1,173 @@
+:root {
+  --encre: #2b2622;
+  --fond: #fbf9f6;
+  --accent: #b4532a;
+  --accent-doux: #f5e9df;
+  --bord: #e3dcd2;
+  --gris: #6b625a;
+  --vert: #2e7d4f;
+  --rouge: #b03a2e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: var(--encre);
+  background: var(--fond);
+}
+h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+.sous-titre { color: var(--gris); font-size: 1.1rem; margin-top: 0; }
+h2 {
+  font-size: 1.45rem;
+  line-height: 1.3;
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--bord);
+  color: var(--accent);
+}
+h3 { font-size: 1.1rem; margin-bottom: 0.3rem; }
+a { color: var(--accent); }
+.lang-note { color: var(--gris); font-size: 0.85em; white-space: nowrap; }
+nav.sommaire {
+  background: #fff;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  margin-top: 1.5rem;
+}
+nav.sommaire h2 {
+  margin: 0 0 0.5rem;
+  border: none;
+  padding: 0;
+  font-size: 1.2rem;
+  color: var(--encre);
+}
+nav.sommaire ol { margin: 0; padding-left: 1.4rem; }
+nav.sommaire li { margin: 0.3rem 0; }
+aside.retenir {
+  background: var(--accent-doux);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.75rem 1.25rem;
+  margin: 1.5rem 0;
+}
+aside.retenir h3 { margin-top: 0.25rem; color: var(--accent); }
+aside.retenir ul { margin: 0.5rem 0; padding-left: 1.2rem; }
+aside.retenir li { margin: 0.35rem 0; }
+div.exemple {
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  background: #fff;
+  padding: 0.25rem 1.25rem;
+  margin: 1.25rem 0;
+}
+div.exemple .avant { border-left: 4px solid var(--rouge); padding-left: 0.75rem; }
+div.exemple .apres { border-left: 4px solid var(--vert); padding-left: 0.75rem; }
+div.exemple .avant strong { color: var(--rouge); }
+div.exemple .apres strong { color: var(--vert); }
+ol.checklist { padding-left: 1.5rem; }
+ol.checklist li { margin: 0.85rem 0; padding-left: 0.25rem; }
+figure { margin: 1.75rem 0; }
+figure svg {
+  display: block;
+  background: #fff;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 0.5rem;
+}
+figcaption {
+  font-size: 0.9rem;
+  color: var(--gris);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+pre {
+  background: #fff;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+dl dt { font-weight: 700; margin-top: 1rem; }
+dl dd { margin-left: 0; margin-top: 0.2rem; }
+footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 2px solid var(--bord);
+  font-size: 0.9rem;
+  color: var(--gris);
+}
+
+/* Navigation du site */
+nav.site-nav {
+  background: #fff;
+  border-bottom: 2px solid var(--bord);
+  padding: 0.6rem 1rem;
+  margin: -1rem -1rem 1.5rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+nav.site-nav a {
+  text-decoration: none;
+  color: var(--gris);
+  font-size: 0.95rem;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+nav.site-nav a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+nav.site-nav a.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+nav.site-nav .nav-title {
+  font-weight: 700;
+  color: var(--encre);
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+/* Tableaux */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  background: #fff;
+  border: 1px solid var(--bord);
+  border-radius: 10px;
+  overflow: hidden;
+}
+th, td {
+  padding: 0.6rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--bord);
+}
+th {
+  background: var(--accent-doux);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+td { font-size: 0.9rem; }
+tr:last-child td { border-bottom: none; }
+
+/* Encarts info */
+aside.info {
+  background: #e8f4ec;
+  border-left: 4px solid var(--vert);
+  border-radius: 0 8px 8px 0;
+  padding: 0.75rem 1.25rem;
+  margin: 1.5rem 0;
+}
+aside.info h3 { margin-top: 0.25rem; color: var(--vert); }

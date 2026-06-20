@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Créer un plugin de skills pour Claude Desktop</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="site-nav" aria-label="Navigation du site">
+<span class="nav-title">Apprendre l'IA</span>
+<a href="index.html">Guide pas à pas</a>
+<a href="creer-plugin-skills.html" class="active">Créer un plugin de skills</a>
+</nav>
+
+<header>
+<h1>Créer un plugin de skills pour Claude Desktop</h1>
+<p class="sous-titre">Regroupez plusieurs compétences dans un seul paquet, prêt à partager.</p>
+<p>Vous avez suivi le <a href="index.html">guide principal</a> et vous savez ce qu'est une skill (compétence). Cette page va plus loin&nbsp;: vous allez apprendre à regrouper <em>plusieurs</em> skills dans un seul paquet — un <strong>plugin privé</strong> — que vous pourrez installer en un clic et partager avec vos collègues, votre équipe ou vos amis. Aucune compétence en programmation n'est requise&nbsp;: tout se fait avec des fichiers texte et un outil de compression ZIP.</p>
+</header>
+
+<nav class="sommaire" aria-label="Sommaire">
+<h2>Sommaire</h2>
+<ol>
+<li><a href="#pourquoi">Pourquoi regrouper ses skills dans un plugin&nbsp;?</a></li>
+<li><a href="#structure">La structure d'un plugin&nbsp;: un dossier, plusieurs sous-dossiers</a></li>
+<li><a href="#ecrire">Écrire ses skills, pas à pas</a></li>
+<li><a href="#emballer">Emballer le tout en un fichier ZIP</a></li>
+<li><a href="#installer">Installer le plugin dans Claude Desktop</a></li>
+<li><a href="#partager">Partager son plugin en privé</a></li>
+<li><a href="#exemple-complet">Exemple complet&nbsp;: un plugin «&nbsp;Assistant administratif&nbsp;»</a></li>
+<li><a href="#bonnes-pratiques">Bonnes pratiques et erreurs courantes</a></li>
+</ol>
+</nav>
+
+<main>
+
+<section id="pourquoi">
+<h2>Pourquoi regrouper ses skills dans un plugin&nbsp;?</h2>
+
+<p>Une seule skill, c'est une fiche recette. Un plugin, c'est le classeur complet. Voici les avantages concrets&nbsp;:</p>
+
+<ul>
+<li><strong>Un seul fichier à installer</strong> au lieu de dix skills séparées.</li>
+<li><strong>Un seul fichier à partager</strong> avec votre équipe&nbsp;: tout le monde a les mêmes compétences, au même format.</li>
+<li><strong>Des skills qui se complètent</strong>&nbsp;: vous pouvez créer un ensemble cohérent (par exemple, toutes les tâches administratives d'une association).</li>
+<li><strong>Des mises à jour simples</strong>&nbsp;: vous envoyez un nouveau ZIP, les collègues remplacent l'ancien.</li>
+</ul>
+
+<p>Quelques exemples de plugins utiles&nbsp;:</p>
+
+<table>
+<tr><th>Plugin</th><th>Skills incluses</th><th>Pour qui</th></tr>
+<tr><td>Assistant administratif</td><td>Compte rendu, e-mail pro, note de frais, courrier officiel</td><td>Secrétariat, assistantes</td></tr>
+<tr><td>Kit freelance</td><td>Devis, facture, relance client, suivi de projet</td><td>Indépendants</td></tr>
+<tr><td>Communication interne</td><td>Newsletter, post LinkedIn, communiqué de presse</td><td>Service communication</td></tr>
+<tr><td>Association</td><td>PV d'assemblée, appel à cotisation, rapport d'activité</td><td>Bénévoles, trésoriers</td></tr>
+</table>
+</section>
+
+<section id="structure">
+<h2>La structure d'un plugin&nbsp;: un dossier, plusieurs sous-dossiers</h2>
+
+<p>Un plugin n'est rien de plus qu'un <strong>dossier contenant plusieurs sous-dossiers</strong>, chaque sous-dossier étant une skill. Voici à quoi ressemble un plugin avec trois skills&nbsp;:</p>
+
+<pre><code>mon-plugin/
+├── compte-rendu/
+│   ├── SKILL.md
+│   └── trame.md
+├── email-pro/
+│   ├── SKILL.md
+│   └── signature.txt
+└── note-de-frais/
+    ├── SKILL.md
+    └── categories.md</code></pre>
+
+<p>C'est tout. Pas de fichier de configuration compliqué, pas de code à écrire. Chaque sous-dossier est une skill autonome avec son fichier <code>SKILL.md</code> (les instructions) et ses fichiers compagnons (modèles, exemples, signatures, etc.).</p>
+
+<aside class="retenir" aria-label="Règle importante">
+<h3>Règle à retenir</h3>
+<ul>
+<li>Chaque skill <strong>doit</strong> avoir son propre sous-dossier.</li>
+<li>Chaque sous-dossier <strong>doit</strong> contenir un fichier nommé exactement <code>SKILL.md</code> (majuscules obligatoires).</li>
+<li>Les noms de dossiers&nbsp;: pas d'espaces, pas d'accents, pas de caractères spéciaux. Utilisez des tirets&nbsp;: <code>note-de-frais</code> plutôt que <code>Note de Frais</code>.</li>
+</ul>
+</aside>
+</section>
+
+<section id="ecrire">
+<h2>Écrire ses skills, pas à pas</h2>
+
+<p>Chaque fichier <code>SKILL.md</code> suit le même format simple en deux parties&nbsp;: un <strong>en-tête</strong> (les informations techniques entre les <code>---</code>) et les <strong>instructions</strong> (rédigées en français courant, comme si vous expliquiez la tâche à un collègue).</p>
+
+<h3>Partie 1&nbsp;: l'en-tête</h3>
+
+<p>L'en-tête contient trois informations, toujours entre deux lignes de <code>---</code>&nbsp;:</p>
+
+<pre><code>---
+name: compte-rendu-reunion
+description: Transforme des notes brutes en compte rendu standard.
+  À utiliser dès que je fournis des notes de réunion.
+---</code></pre>
+
+<table>
+<tr><th>Champ</th><th>Quoi mettre</th><th>Limite</th></tr>
+<tr><td><code>name</code></td><td>Un identifiant court, sans espaces ni accents</td><td>64 caractères max</td></tr>
+<tr><td><code>description</code></td><td>Ce que fait la skill et <strong>quand</strong> l'utiliser</td><td>200 caractères max</td></tr>
+</table>
+
+<p>La description est <strong>cruciale</strong>&nbsp;: c'est elle que Claude lit pour décider quand charger la skill. Soyez explicite&nbsp;: «&nbsp;À utiliser dès que...&nbsp;», «&nbsp;Quand je demande de...&nbsp;», «&nbsp;Si je fournis...&nbsp;».</p>
+
+<div class="exemple">
+<p class="avant"><strong>Description vague&nbsp;:</strong> «&nbsp;Gère les e-mails.&nbsp;»</p>
+<p class="apres"><strong>Description efficace&nbsp;:</strong> «&nbsp;Rédige un e-mail professionnel en mon nom. À utiliser dès que je demande d'écrire un mail, un courriel ou un message professionnel.&nbsp;»</p>
+</div>
+
+<h3>Partie 2&nbsp;: les instructions</h3>
+
+<p>Après le second <code>---</code>, écrivez vos instructions comme vous brieferiez un assistant humain. Voici un modèle&nbsp;:</p>
+
+<pre><code>---
+name: email-pro
+description: Rédige un e-mail professionnel en mon nom.
+  À utiliser dès que je demande d'écrire un mail ou un courriel.
+---
+
+# E-mail professionnel
+
+## Contexte
+Je suis [votre prénom], [votre poste] chez [votre entreprise].
+
+## Règles
+1. Commence toujours par « Bonjour [prénom du destinataire], ».
+2. Ton professionnel mais chaleureux, vouvoiement par défaut.
+3. Maximum 15 lignes, sauf si je demande un long message.
+4. Termine par la signature contenue dans `signature.txt`.
+
+## Ce qu'il ne faut JAMAIS faire
+- Inventer des informations que je n'ai pas fournies.
+- Utiliser du jargon technique sauf si le destinataire est technique.
+- Tutoyer sans que je le demande explicitement.</code></pre>
+
+<p>Quelques conseils pour bien rédiger les instructions&nbsp;:</p>
+
+<ul>
+<li><strong>Soyez concret.</strong> «&nbsp;Maximum 15 lignes&nbsp;» est plus utile que «&nbsp;sois concis&nbsp;».</li>
+<li><strong>Donnez des exemples.</strong> Un avant/après aide Claude à comprendre exactement ce que vous attendez.</li>
+<li><strong>Listez les interdits.</strong> Claude suit mieux les règles négatives («&nbsp;ne fais jamais...&nbsp;») que les règles trop vagues.</li>
+<li><strong>Référencez les fichiers compagnons.</strong> Si vous mettez un fichier <code>signature.txt</code> à côté du <code>SKILL.md</code>, nommez-le dans les instructions&nbsp;: «&nbsp;utilise le contenu de <code>signature.txt</code>&nbsp;».</li>
+</ul>
+
+<h3>Les fichiers compagnons</h3>
+
+<p>Ce sont les fichiers que vous placez à côté du <code>SKILL.md</code> dans le même dossier. Ils servent de modèles, d'exemples ou de données de référence. Exemples&nbsp;:</p>
+
+<ul>
+<li><code>signature.txt</code> — votre signature d'e-mail</li>
+<li><code>trame.md</code> — un modèle de document à remplir</li>
+<li><code>categories.md</code> — la liste de vos catégories de dépenses</li>
+<li><code>exemple-bon.md</code> — un exemple de résultat réussi pour que Claude comprenne le style</li>
+</ul>
+
+<aside class="info" aria-label="Astuce">
+<h3>Astuce&nbsp;: demandez à Claude de vous aider</h3>
+<p>Vous pouvez écrire vos skills directement dans Claude Desktop&nbsp;! Décrivez ce que vous voulez et demandez&nbsp;: «&nbsp;Rédige le fichier SKILL.md pour cette compétence.&nbsp;» Claude connaît le format et produira un fichier prêt à l'emploi.</p>
+</aside>
+</section>
+
+<section id="emballer">
+<h2>Emballer le tout en un fichier ZIP</h2>
+
+<p>Une fois vos dossiers de skills prêts, il faut les comprimer en un seul fichier ZIP. Voici comment faire selon votre système.</p>
+
+<h3>Sur Windows</h3>
+<ol class="checklist">
+<li>Ouvrez l'Explorateur de fichiers et allez dans le dossier qui <strong>contient</strong> vos sous-dossiers de skills (par exemple <code>mon-plugin</code>).</li>
+<li>Sélectionnez <strong>tous les sous-dossiers</strong> (Ctrl+A).</li>
+<li>Clic droit &gt; <strong>Compresser dans un fichier ZIP</strong> (ou «&nbsp;Envoyer vers &gt; Dossier compressé&nbsp;» sur les anciennes versions).</li>
+<li>Renommez le fichier ZIP&nbsp;: <code>mon-plugin.zip</code>.</li>
+</ol>
+
+<h3>Sur macOS</h3>
+<ol class="checklist">
+<li>Ouvrez le Finder et allez dans le dossier qui contient vos sous-dossiers de skills.</li>
+<li>Sélectionnez tous les sous-dossiers (Cmd+A).</li>
+<li>Clic droit &gt; <strong>Compresser</strong>.</li>
+<li>Renommez le fichier <code>Archive.zip</code> en <code>mon-plugin.zip</code>.</li>
+</ol>
+
+<aside class="retenir" aria-label="Point important">
+<h3>Point important</h3>
+<ul>
+<li>Les sous-dossiers de skills doivent être <strong>à la racine</strong> du ZIP, pas dans un dossier intermédiaire. Quand vous ouvrez le ZIP, vous devez voir directement <code>compte-rendu/</code>, <code>email-pro/</code>, etc., et non pas <code>mon-plugin/compte-rendu/</code>.</li>
+<li>Si vous avez un dossier intermédiaire, entrez dedans, sélectionnez les sous-dossiers, et compressez-les depuis là.</li>
+</ul>
+</aside>
+</section>
+
+<section id="installer">
+<h2>Installer le plugin dans Claude Desktop</h2>
+
+<p>Une fois votre fichier ZIP prêt, l'installation se fait en quelques clics&nbsp;:</p>
+
+<ol class="checklist">
+<li>Ouvrez <strong>Claude Desktop</strong>.</li>
+<li>Allez dans <strong>Personnaliser</strong> (l'icône en forme de curseurs, en bas à gauche de la fenêtre).</li>
+<li>Cliquez sur <strong>Compétences</strong> (ou «&nbsp;Skills&nbsp;» si votre interface est en anglais).</li>
+<li>Cliquez sur <strong>Importer</strong> ou faites glisser votre fichier ZIP dans la zone d'import.</li>
+<li>Claude détecte les skills contenues dans le ZIP et les liste. Activez celles que vous voulez.</li>
+</ol>
+
+<p>Pour vérifier que tout fonctionne, lancez une nouvelle conversation et posez une demande qui devrait déclencher l'une de vos skills. Par exemple, si vous avez une skill «&nbsp;compte-rendu&nbsp;», copiez&nbsp;:</p>
+
+<pre><code>Voici mes notes de réunion d'aujourd'hui :
+- Présents : Marie, Paul, Sophie
+- On a décidé de reporter le lancement au 15 juillet
+- Paul s'occupe de prévenir le client
+- Sophie met à jour le planning
+
+Transforme ça en compte rendu.</code></pre>
+
+<p>Si Claude charge la skill, vous verrez son nom apparaître dans la réponse (un petit indicateur en haut du message). Si la skill ne se déclenche pas, revoyez la <strong>description</strong> dans l'en-tête&nbsp;: c'est presque toujours elle qui est en cause.</p>
+</section>
+
+<section id="partager">
+<h2>Partager son plugin en privé</h2>
+
+<p>L'intérêt d'un plugin, c'est de pouvoir le partager. Voici les méthodes les plus simples, de la plus accessible à la plus organisée&nbsp;:</p>
+
+<h3>Par e-mail ou messagerie</h3>
+<p>Envoyez le fichier ZIP par e-mail, WhatsApp, Slack ou tout autre canal habituel. Le destinataire le télécharge et l'importe dans Claude Desktop comme décrit ci-dessus. Simple et efficace pour un petit groupe.</p>
+
+<h3>Par un dossier partagé (Drive, OneDrive, Dropbox...)</h3>
+<p>Placez le ZIP dans un dossier partagé. Avantage&nbsp;: quand vous mettez à jour le plugin, tout le monde peut récupérer la nouvelle version au même endroit. Créez un sous-dossier <code>plugins-claude</code> dans votre espace partagé pour que ce soit facile à retrouver.</p>
+
+<h3>Avec un lien de téléchargement</h3>
+<p>Si vous utilisez Google Drive, Dropbox ou OneDrive, créez un lien de partage vers le fichier ZIP. Envoyez ce lien à vos collègues&nbsp;: un clic pour télécharger, puis import dans Claude Desktop.</p>
+
+<aside class="info" aria-label="Mises à jour">
+<h3>Gérer les mises à jour</h3>
+<p>Quand vous améliorez une skill ou en ajoutez une nouvelle, créez un nouveau ZIP et demandez à vos collègues de supprimer l'ancienne version dans <strong>Personnaliser &gt; Compétences</strong> avant d'importer la nouvelle. Pensez à noter la date ou un numéro de version dans le nom du fichier&nbsp;: <code>assistant-admin-v2-2026-06.zip</code>.</p>
+</aside>
+</section>
+
+<section id="exemple-complet">
+<h2>Exemple complet&nbsp;: un plugin «&nbsp;Assistant administratif&nbsp;»</h2>
+
+<p>Voici un plugin prêt à l'emploi avec trois skills. Vous pouvez le reproduire tel quel pour vous entraîner, puis l'adapter à vos besoins.</p>
+
+<h3>Structure du plugin</h3>
+
+<pre><code>assistant-admin/
+├── compte-rendu/
+│   └── SKILL.md
+├── email-pro/
+│   ├── SKILL.md
+│   └── signature.txt
+└── courrier-officiel/
+    └── SKILL.md</code></pre>
+
+<h3>Skill 1&nbsp;: compte-rendu/SKILL.md</h3>
+
+<pre><code>---
+name: compte-rendu-reunion
+description: Transforme des notes brutes en compte rendu de réunion structuré.
+  À utiliser dès que je fournis des notes de réunion ou que je demande un CR.
+---
+
+# Compte rendu de réunion
+
+## Format obligatoire
+1. **En-tête** : date, lieu (si précisé), objet de la réunion.
+2. **Participants** : liste à puces, par ordre alphabétique du prénom.
+3. **Points abordés** : un paragraphe par sujet, avec les décisions prises.
+4. **Actions** : tableau avec trois colonnes — Action | Responsable | Échéance.
+5. **Prochaine réunion** : date si elle a été fixée.
+
+## Règles de style
+- Ton neutre et factuel.
+- Phrases courtes, pas de jargon inutile.
+- Une page maximum sauf si la réunion couvre plus de 5 sujets.
+- Si une information manque (date, lieu), ne pas l'inventer :
+  écrire « [à compléter] ».</code></pre>
+
+<h3>Skill 2&nbsp;: email-pro/SKILL.md</h3>
+
+<pre><code>---
+name: email-professionnel
+description: Rédige un e-mail professionnel en mon nom.
+  À utiliser dès que je demande d'écrire un mail, un courriel
+  ou un message professionnel.
+---
+
+# E-mail professionnel
+
+## Règles
+1. Commence par « Bonjour [prénom], » ou « Bonjour, » si le
+   destinataire n'est pas nommé.
+2. Vouvoiement par défaut, sauf si je précise de tutoyer.
+3. Ton professionnel mais chaleureux — ni froid ni familier.
+4. Maximum 15 lignes, sauf demande contraire.
+5. Termine par la signature contenue dans `signature.txt`.
+
+## Interdits
+- Ne jamais inventer de détails (dates, montants, noms).
+- Pas de formules creuses : « Je me permets de... »,
+  « Suite à notre échange téléphonique... ».</code></pre>
+
+<h3>Fichier email-pro/signature.txt</h3>
+
+<pre><code>Cordialement,
+Marie Dupont
+Assistante de direction
+Société Exemple
+Tel : 01 23 45 67 89</code></pre>
+
+<h3>Skill 3&nbsp;: courrier-officiel/SKILL.md</h3>
+
+<pre><code>---
+name: courrier-officiel
+description: Rédige un courrier formel (lettre officielle) avec mise en page
+  standard. À utiliser quand je demande un courrier, une lettre formelle
+  ou un recommandé.
+---
+
+# Courrier officiel
+
+## Mise en page
+1. **Expéditeur** en haut à gauche (nom, adresse).
+2. **Destinataire** en haut à droite.
+3. **Lieu et date** sous le destinataire.
+4. **Objet** en gras, sur une ligne.
+5. **Corps** : « Madame, Monsieur, » ou titre approprié.
+6. **Formule de politesse** : formelle et classique.
+7. **Signature** : prénom, nom.
+
+## Règles
+- Vouvoiement obligatoire.
+- Ton formel et respectueux.
+- Si c'est un recommandé, ajouter « Lettre recommandée avec
+  accusé de réception » en haut.
+- Si des informations manquent (adresse, numéro de dossier),
+  écrire « [à compléter] ».</code></pre>
+
+<aside class="retenir" aria-label="À retenir">
+<h3>Ce qu'il faut retenir</h3>
+<ul>
+<li>Chaque skill a son propre dossier avec un <code>SKILL.md</code>.</li>
+<li>Les fichiers compagnons (<code>signature.txt</code>, etc.) vont dans le même dossier que le <code>SKILL.md</code> qui les utilise.</li>
+<li>Le tout est compressé en ZIP pour être importé d'un coup.</li>
+</ul>
+</aside>
+</section>
+
+<section id="bonnes-pratiques">
+<h2>Bonnes pratiques et erreurs courantes</h2>
+
+<h3>Les bonnes habitudes</h3>
+
+<ul>
+<li><strong>Une skill = une tâche.</strong> Mieux vaut trois petites skills précises qu'une énorme qui fait tout mal. «&nbsp;Compte rendu&nbsp;» et «&nbsp;e-mail&nbsp;» sont deux skills, pas une seule «&nbsp;bureautique&nbsp;».</li>
+<li><strong>Testez chaque skill individuellement</strong> avant de les emballer ensemble. Importez la skill seule, posez la demande qui devrait la déclencher, vérifiez que Claude la charge et que le résultat vous convient.</li>
+<li><strong>Versionnez vos plugins.</strong> Ajoutez la date ou un numéro de version dans le nom du ZIP&nbsp;: <code>assistant-admin-v3-2026-06.zip</code>. Ainsi, personne ne confond l'ancienne et la nouvelle version.</li>
+<li><strong>Documentez pour vos collègues.</strong> Ajoutez un petit fichier <code>LISEZ-MOI.txt</code> dans le ZIP qui explique ce que contient le plugin et comment l'installer. Ce fichier n'interfère pas avec les skills.</li>
+<li><strong>Relisez vos descriptions.</strong> Si Claude ne charge pas une skill, c'est presque toujours parce que la description ne correspond pas à ce que vous avez demandé.</li>
+</ul>
+
+<h3>Les erreurs fréquentes</h3>
+
+<table>
+<tr><th>Erreur</th><th>Symptôme</th><th>Solution</th></tr>
+<tr><td>Dossier intermédiaire dans le ZIP</td><td>Claude ne détecte aucune skill</td><td>Les sous-dossiers de skills doivent être à la racine du ZIP</td></tr>
+<tr><td>Fichier nommé <code>skill.md</code> en minuscules</td><td>La skill n'est pas reconnue</td><td>Renommez en <code>SKILL.md</code> (majuscules)</td></tr>
+<tr><td>Description trop vague</td><td>Claude ne charge jamais la skill</td><td>Précisez «&nbsp;À utiliser dès que...&nbsp;»</td></tr>
+<tr><td>Description trop longue (&gt;&nbsp;200 caractères)</td><td>Erreur à l'import</td><td>Raccourcissez la description</td></tr>
+<tr><td>Nom avec espaces ou accents</td><td>Problème de chargement</td><td>Utilisez des tirets&nbsp;: <code>note-de-frais</code></td></tr>
+<tr><td>Fichier compagnon non référencé</td><td>Claude l'ignore</td><td>Mentionnez-le dans les instructions du SKILL.md</td></tr>
+</table>
+
+<h3>Résumé en un coup d'œil</h3>
+
+<figure>
+<svg viewBox="0 0 800 320" role="img" aria-labelledby="diag-plugin-title" style="width:100%;height:auto">
+<title id="diag-plugin-title">Les quatre étapes pour créer et partager un plugin de skills</title>
+<rect x="20" y="60" width="170" height="80" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="105" y="94" text-anchor="middle" font-size="18" fill="#2b2622">
+<tspan x="105">1. Écrire</tspan>
+<tspan x="105" dy="24" font-size="14">les fichiers SKILL.md</tspan>
+</text>
+<line x1="194" y1="100" x2="218" y2="100" stroke="#6b625a" stroke-width="3"/>
+<path d="M222,100 l-14,-8 v16 z" fill="#6b625a"/>
+<rect x="225" y="60" width="170" height="80" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="310" y="94" text-anchor="middle" font-size="18" fill="#2b2622">
+<tspan x="310">2. Organiser</tspan>
+<tspan x="310" dy="24" font-size="14">un dossier par skill</tspan>
+</text>
+<line x1="399" y1="100" x2="423" y2="100" stroke="#6b625a" stroke-width="3"/>
+<path d="M427,100 l-14,-8 v16 z" fill="#6b625a"/>
+<rect x="430" y="60" width="170" height="80" rx="12" fill="#f5e9df" stroke="#b4532a" stroke-width="2"/>
+<text x="515" y="94" text-anchor="middle" font-size="18" fill="#2b2622">
+<tspan x="515">3. Compresser</tspan>
+<tspan x="515" dy="24" font-size="14">en fichier ZIP</tspan>
+</text>
+<line x1="604" y1="100" x2="628" y2="100" stroke="#6b625a" stroke-width="3"/>
+<path d="M632,100 l-14,-8 v16 z" fill="#6b625a"/>
+<rect x="635" y="60" width="145" height="80" rx="12" fill="#b4532a" stroke="#b4532a" stroke-width="2"/>
+<text x="707" y="94" text-anchor="middle" font-size="18" fill="#fff">
+<tspan x="707">4. Importer</tspan>
+<tspan x="707" dy="24" font-size="14" fill="#fff">dans Claude</tspan>
+</text>
+<line x1="707" y1="144" x2="707" y2="185" stroke="#6b625a" stroke-width="2"/>
+<rect x="575" y="188" width="265" height="55" rx="10" fill="#e8f4ec" stroke="#2e7d4f" stroke-width="2"/>
+<text x="707" y="222" text-anchor="middle" font-size="16" fill="#2e7d4f">Partager le ZIP avec l'équipe</text>
+</svg>
+<figcaption>Écrire, organiser, compresser, importer&nbsp;: quatre étapes pour un plugin prêt à partager.</figcaption>
+</figure>
+
+<aside class="retenir" aria-label="À retenir">
+<h3>Ce qu'il faut retenir</h3>
+<ul>
+<li>Un plugin = un ZIP contenant plusieurs sous-dossiers, chacun avec son <code>SKILL.md</code>.</li>
+<li>La description (200 caractères max) décide de <em>quand</em> Claude charge la skill&nbsp;: soignez-la.</li>
+<li>Testez chaque skill séparément avant de tout regrouper.</li>
+<li>Partagez le ZIP par e-mail, Drive ou tout autre canal habituel.</li>
+</ul>
+</aside>
+</section>
+
+</main>
+
+<footer>
+<p>Guide rédigé en juin 2026. Complément du <a href="index.html">guide principal «&nbsp;Apprendre l'IA avec Claude&nbsp;»</a>.</p>
+</footer>
+</body>
+</html>
