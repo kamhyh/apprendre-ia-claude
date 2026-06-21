@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plans et Boucles dans Claude Code</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="site-nav" aria-label="Navigation du site">
+<div class="nav-inner">
+<span class="nav-title">Apprendre l'IA</span>
+<button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+<div class="nav-links">
+<a href="index.html">Guide pas à pas</a>
+<a href="creer-plugin-skills.html">Créer un plugin de skills</a>
+<a href="plans-et-boucles.html" class="active">Plans &amp; Boucles</a>
+</div>
+</div>
+</nav>
+
+<header>
+<h1>Plans et Boucles dans Claude Code</h1>
+<p class="sous-titre">Faire réfléchir Claude avant d'agir, puis le faire tourner en continu.</p>
+<p>Claude Code peut faire bien plus qu'exécuter une instruction à la fois. Deux fonctions puissantes vous permettent de passer à la vitesse supérieure&nbsp;: le <strong>mode Plan</strong> (demander à Claude de réfléchir avant de coder) et les <strong>Boucles</strong> (faire tourner une tâche en continu, automatiquement). Ce guide vous explique tout, du concept à la pratique.</p>
+</header>
+
+<nav class="sommaire" aria-label="Sommaire">
+<h2>Sommaire</h2>
+<ol>
+<li><a href="#partie-1">Partie 1 — Le Mode Plan</a>
+  <ol>
+    <li><a href="#plan-cest-quoi">C'est quoi, le mode Plan&nbsp;?</a></li>
+    <li><a href="#plan-pourquoi">Pourquoi planifier avant de coder&nbsp;?</a></li>
+    <li><a href="#plan-comment">Comment utiliser le mode Plan</a></li>
+    <li><a href="#plan-anatomie">Anatomie d'un plan</a></li>
+    <li><a href="#plan-bonnes-pratiques">Bonnes pratiques</a></li>
+    <li><a href="#plan-sous-le-capot">Sous le capot&nbsp;: comment ça marche</a></li>
+    <li><a href="#plan-exemples">Exemples concrets</a></li>
+  </ol>
+</li>
+<li><a href="#partie-2">Partie 2 — Les Boucles (<code>/loop</code>)</a>
+  <ol>
+    <li><a href="#loop-cest-quoi">C'est quoi, une boucle&nbsp;?</a></li>
+    <li><a href="#loop-pourquoi">Pourquoi utiliser des boucles&nbsp;?</a></li>
+    <li><a href="#loop-comment">Comment lancer une boucle</a></li>
+    <li><a href="#loop-types">Les deux types de boucles</a></li>
+    <li><a href="#loop-cas-usage">Cas d'usage courants</a></li>
+    <li><a href="#loop-sous-le-capot">Sous le capot&nbsp;: comment Claude gère le rythme</a></li>
+    <li><a href="#loop-bonnes-pratiques">Bonnes pratiques et pièges</a></li>
+  </ol>
+</li>
+<li><a href="#partie-3">Partie 3 — Combiner Plans et Boucles</a></li>
+<li><a href="#glossaire">Glossaire</a></li>
+</ol>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="partie-1">
+<h2>Partie 1 — Le Mode Plan</h2>
+
+<section id="plan-cest-quoi">
+<h3>C'est quoi, le mode Plan&nbsp;?</h3>
+<p>Imaginez que vous demandez à un artisan de rénover votre cuisine. Deux approches sont possibles&nbsp;:</p>
+<ul>
+<li><strong>Sans plan</strong>&nbsp;: il commence à casser les murs tout de suite. C'est rapide au début, mais il risque de se rendre compte à mi-chemin qu'il a oublié la plomberie.</li>
+<li><strong>Avec plan</strong>&nbsp;: il fait d'abord un croquis, liste le matériel, identifie les étapes, et <em>ensuite</em> il commence les travaux.</li>
+</ul>
+<p>Le mode Plan de Claude Code, c'est exactement ça. Quand vous l'activez, Claude va&nbsp;:</p>
+<ol>
+<li><strong>Explorer</strong> votre code pour comprendre ce qui existe</li>
+<li><strong>Analyser</strong> ce que vous demandez</li>
+<li><strong>Proposer un plan</strong> détaillé (quels fichiers modifier, dans quel ordre, quelles précautions prendre)</li>
+<li><strong>Attendre votre accord</strong> avant de toucher au code</li>
+</ol>
+<div class="encadre astuce">
+<strong>En une phrase&nbsp;:</strong> le mode Plan sépare la réflexion de l'action. Claude pense d'abord, code ensuite.
+</div>
+</section>
+
+<section id="plan-pourquoi">
+<h3>Pourquoi planifier avant de coder&nbsp;?</h3>
+<p>Sans planification, Claude a tendance à foncer tête baissée. Sur des tâches simples (corriger une faute de frappe, ajouter un bouton), ce n'est pas un problème. Mais dès que la tâche est plus complexe, planifier évite&nbsp;:</p>
+<table>
+<thead><tr><th>Problème sans plan</th><th>Solution avec plan</th></tr></thead>
+<tbody>
+<tr><td>Claude modifie le mauvais fichier</td><td>Le plan liste précisément les fichiers à toucher</td></tr>
+<tr><td>Il casse une fonctionnalité existante</td><td>Le plan identifie les dépendances et les risques</td></tr>
+<tr><td>Il oublie une étape importante</td><td>Le plan décompose la tâche en étapes séquentielles</td></tr>
+<tr><td>Vous ne comprenez pas ce qu'il fait</td><td>Le plan vous donne une vision claire <em>avant</em> qu'il commence</td></tr>
+<tr><td>Le résultat ne correspond pas à ce que vous vouliez</td><td>Vous pouvez corriger le plan avant qu'il ne code</td></tr>
+</tbody>
+</table>
+<div class="encadre attention">
+<strong>Règle d'or&nbsp;:</strong> Plus la tâche est complexe, plus le plan est utile. Pour une modification d'une ligne, pas besoin de plan. Pour restructurer un projet entier, c'est indispensable.
+</div>
+</section>
+
+<section id="plan-comment">
+<h3>Comment utiliser le mode Plan</h3>
+
+<h4>Méthode 1&nbsp;: la commande <code>/plan</code></h4>
+<p>Dans Claude Code, tapez simplement&nbsp;:</p>
+<pre><code>/plan</code></pre>
+<p>Claude entre en mode planification. Il ne va <strong>rien modifier</strong> — il va seulement lire, analyser et proposer. Vous pouvez aussi combiner avec votre demande&nbsp;:</p>
+<pre><code>Peux-tu planifier comment ajouter un système de notifications à mon application&nbsp;?</code></pre>
+<p>Claude comprendra qu'il doit d'abord réfléchir.</p>
+
+<h4>Méthode 2&nbsp;: demander explicitement</h4>
+<p>Vous pouvez aussi simplement demander en langage naturel&nbsp;:</p>
+<pre><code>Avant de coder, fais-moi un plan détaillé pour cette fonctionnalité.</code></pre>
+<pre><code>Ne touche à rien pour l'instant, dis-moi juste ce que tu ferais.</code></pre>
+
+<h4>Étapes typiques d'une session avec plan</h4>
+<ol>
+<li>Vous décrivez ce que vous voulez</li>
+<li>Claude explore le code existant (il lit les fichiers, cherche les patterns)</li>
+<li>Claude vous présente un plan structuré</li>
+<li>Vous relisez le plan, posez des questions, demandez des ajustements</li>
+<li>Quand le plan vous convient, vous dites <code>OK, exécute le plan</code></li>
+<li>Claude code en suivant le plan étape par étape</li>
+</ol>
+</section>
+
+<section id="plan-anatomie">
+<h3>Anatomie d'un plan</h3>
+<p>Un bon plan de Claude contient généralement&nbsp;:</p>
+
+<div class="encadre">
+<strong>Exemple de plan type&nbsp;:</strong>
+<pre><code>## Plan : Ajouter un mode sombre à l'application
+
+### Contexte
+L'application utilise actuellement un thème clair codé en dur
+dans style.css. Les couleurs sont définies dans des variables
+CSS dans :root.
+
+### Étapes
+
+1. **Définir les variables du mode sombre**
+   - Fichier : style.css
+   - Ajouter un bloc `[data-theme="dark"]` avec les couleurs inversées
+   - Garder les mêmes noms de variables
+
+2. **Ajouter un bouton de basculement**
+   - Fichier : index.html
+   - Placer un bouton dans la barre de navigation
+   - Icône soleil/lune
+
+3. **Écrire le JavaScript de basculement**
+   - Fichier : script.js (nouveau fichier)
+   - Lire la préférence sauvegardée dans localStorage
+   - Basculer l'attribut data-theme sur &lt;html&gt;
+
+4. **Respecter la préférence système**
+   - Détecter prefers-color-scheme au chargement
+
+### Risques identifiés
+- Les SVG inline utilisent des couleurs en dur → les adapter
+- Le tableau en étape 4 a un fond blanc fixe → le rendre dynamique
+
+### Fichiers impactés
+- style.css (modifié)
+- index.html (modifié)
+- script.js (créé)</code></pre>
+</div>
+
+<p>Remarquez que le plan identifie&nbsp;:</p>
+<ul>
+<li>Le <strong>contexte</strong> — ce qui existe déjà</li>
+<li>Les <strong>étapes</strong> — dans l'ordre logique</li>
+<li>Les <strong>fichiers</strong> — lesquels seront touchés et comment</li>
+<li>Les <strong>risques</strong> — ce qui pourrait mal tourner</li>
+</ul>
+</section>
+
+<section id="plan-bonnes-pratiques">
+<h3>Bonnes pratiques</h3>
+
+<h4>✓ À faire</h4>
+<ul>
+<li><strong>Donnez du contexte</strong> — Plus Claude comprend votre projet, meilleur sera le plan. Ex&nbsp;: <em>«&nbsp;C'est une app mobile pour des couples, on utilise Kotlin et Jetpack Compose&nbsp;»</em></li>
+<li><strong>Relisez le plan attentivement</strong> — C'est le moment de corriger le tir, avant que du code soit écrit</li>
+<li><strong>Posez des questions</strong> — Si une étape n'est pas claire, demandez des précisions</li>
+<li><strong>Demandez des alternatives</strong> — <em>«&nbsp;Y a-t-il une autre approche&nbsp;?&nbsp;»</em></li>
+<li><strong>Validez par morceaux</strong> — Sur un gros plan, demandez à Claude d'exécuter une étape à la fois</li>
+</ul>
+
+<h4>✗ À éviter</h4>
+<ul>
+<li><strong>Planifier des tâches triviales</strong> — Corriger une faute de frappe ne nécessite pas de plan</li>
+<li><strong>Ignorer le plan</strong> — Si vous dites juste <em>«&nbsp;OK fais-le&nbsp;»</em> sans lire, vous perdez l'intérêt du mode Plan</li>
+<li><strong>Changer d'avis en cours de route</strong> — Si vous voulez modifier le plan, mieux vaut le re-planifier plutôt que corriger à la volée</li>
+</ul>
+</section>
+
+<section id="plan-sous-le-capot">
+<h3>Sous le capot&nbsp;: comment ça marche</h3>
+<p>Quand vous activez le mode Plan, voici ce qui se passe en coulisses&nbsp;:</p>
+
+<ol>
+<li><strong>Restriction des outils</strong> — Claude Code désactive temporairement les outils d'écriture (édition de fichiers, exécution de commandes). Claude ne peut que <em>lire</em> et <em>réfléchir</em>.</li>
+<li><strong>Exploration du code</strong> — Claude utilise ses outils de recherche pour parcourir votre projet&nbsp;: il lit les fichiers, cherche des patterns, comprend la structure.</li>
+<li><strong>Raisonnement structuré</strong> — Claude utilise son <em>espace de réflexion</em> (son «&nbsp;thinking&nbsp;» interne, invisible pour vous) pour organiser ses idées. Il évalue différentes approches et choisit la meilleure.</li>
+<li><strong>Présentation du plan</strong> — Claude vous montre le résultat de sa réflexion sous forme de plan lisible.</li>
+<li><strong>Exécution contrôlée</strong> — Quand vous validez, les outils d'écriture sont réactivés et Claude suit le plan point par point.</li>
+</ol>
+
+<div class="encadre astuce">
+<strong>Le saviez-vous&nbsp;?</strong> Le plan lui-même est stocké dans la conversation. Claude peut s'y référer à tout moment pendant l'exécution. Si vous lui dites <em>«&nbsp;on en est où dans le plan&nbsp;?&nbsp;»</em>, il saura vous répondre.
+</div>
+
+<h4>Plans et agents spécialisés</h4>
+<p>Claude Code peut aussi déléguer la planification à un <strong>agent spécialisé</strong> (un «&nbsp;sous-agent Plan&nbsp;»). Cet agent&nbsp;:</p>
+<ul>
+<li>A accès aux mêmes outils de lecture que Claude</li>
+<li>Travaille dans un contexte séparé (il ne «&nbsp;pollue&nbsp;» pas la conversation principale)</li>
+<li>Renvoie un plan structuré à Claude, qui vous le présente</li>
+</ul>
+<p>C'est utile pour les très gros projets où l'exploration prend beaucoup de place dans la conversation.</p>
+</section>
+
+<section id="plan-exemples">
+<h3>Exemples concrets</h3>
+
+<h4>Exemple 1&nbsp;: Ajouter une fonctionnalité</h4>
+<div class="encadre">
+<p><strong>Vous&nbsp;:</strong></p>
+<pre><code>Je veux ajouter un système de favoris à mon application.
+Les utilisateurs doivent pouvoir mettre en favori des articles
+et les retrouver dans un onglet dédié.
+Planifie-moi ça avant de coder.</code></pre>
+<p><strong>Claude va&nbsp;:</strong> explorer votre base de données, vos modèles, vos écrans existants, puis proposer un plan couvrant le modèle de données, l'API, l'interface utilisateur et les tests.</p>
+</div>
+
+<h4>Exemple 2&nbsp;: Refactoring</h4>
+<div class="encadre">
+<p><strong>Vous&nbsp;:</strong></p>
+<pre><code>/plan
+Mon fichier utils.js fait 800 lignes. Propose-moi un
+découpage en modules plus petits sans rien casser.</code></pre>
+<p><strong>Claude va&nbsp;:</strong> analyser les imports/exports, identifier les groupes de fonctions liées, vérifier qui appelle quoi, et proposer un découpage avec le détail des déplacements de fonctions.</p>
+</div>
+
+<h4>Exemple 3&nbsp;: Corriger un bug complexe</h4>
+<div class="encadre">
+<p><strong>Vous&nbsp;:</strong></p>
+<pre><code>L'app crash quand un utilisateur n'a pas de photo de profil.
+Avant de toucher au code, analyse le problème et dis-moi
+d'où ça vient et comment tu corrigerais.</code></pre>
+<p><strong>Claude va&nbsp;:</strong> chercher les endroits où la photo de profil est utilisée, identifier les accès non protégés (null checks manquants), et proposer un plan de correction fichier par fichier.</p>
+</div>
+</section>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="partie-2">
+<h2>Partie 2 — Les Boucles (<code>/loop</code>)</h2>
+
+<section id="loop-cest-quoi">
+<h3>C'est quoi, une boucle&nbsp;?</h3>
+<p>Une boucle, c'est demander à Claude de <strong>répéter une tâche automatiquement</strong>, à intervalle régulier ou en se régulant lui-même.</p>
+<p>Pensez à un gardien de nuit qui fait sa ronde toutes les heures&nbsp;: il vérifie les portes, note les problèmes, et recommence. La commande <code>/loop</code> transforme Claude en ce gardien pour votre code.</p>
+
+<div class="encadre astuce">
+<strong>En une phrase&nbsp;:</strong> <code>/loop</code> fait tourner Claude en continu sur une tâche, sans que vous ayez à relancer la demande à chaque fois.
+</div>
+</section>
+
+<section id="loop-pourquoi">
+<h3>Pourquoi utiliser des boucles&nbsp;?</h3>
+<p>Les boucles sont utiles quand&nbsp;:</p>
+<ul>
+<li><strong>Vous attendez un résultat</strong> — Un build qui compile, des tests qui passent, un déploiement qui finit</li>
+<li><strong>Vous voulez surveiller quelque chose</strong> — Vérifier qu'un serveur reste en ligne, qu'une API répond</li>
+<li><strong>Vous avez une tâche répétitive</strong> — Vérifier la qualité du code toutes les 10 minutes pendant que vous développez</li>
+<li><strong>Vous voulez de l'autonomie</strong> — Laisser Claude travailler seul sur une liste de tâches pendant que vous faites autre chose</li>
+</ul>
+</section>
+
+<section id="loop-comment">
+<h3>Comment lancer une boucle</h3>
+
+<h4>Syntaxe de base</h4>
+<pre><code>/loop 5m Vérifie si le build est passé et dis-moi le résultat</code></pre>
+<p>Cela demande à Claude de vérifier le build <strong>toutes les 5 minutes</strong>.</p>
+
+<h4>Format de l'intervalle</h4>
+<table>
+<thead><tr><th>Format</th><th>Signification</th><th>Exemple</th></tr></thead>
+<tbody>
+<tr><td><code>30s</code></td><td>30 secondes</td><td><code>/loop 30s vérifie le serveur</code></td></tr>
+<tr><td><code>5m</code></td><td>5 minutes</td><td><code>/loop 5m relance les tests</code></td></tr>
+<tr><td><code>1h</code></td><td>1 heure</td><td><code>/loop 1h fais un rapport</code></td></tr>
+<tr><td><em>(rien)</em></td><td>Claude décide</td><td><code>/loop surveille le déploiement</code></td></tr>
+</tbody>
+</table>
+
+<div class="encadre attention">
+<strong>Limites&nbsp;:</strong> L'intervalle minimum est de <strong>60 secondes</strong> et le maximum est de <strong>60 minutes</strong> (3600 secondes). Si vous demandez moins ou plus, Claude ajustera automatiquement.
+</div>
+
+<h4>Arrêter une boucle</h4>
+<p>Pour arrêter une boucle en cours, vous pouvez&nbsp;:</p>
+<ul>
+<li>Envoyer un nouveau message à Claude (la boucle s'interrompt)</li>
+<li>Fermer la session Claude Code</li>
+<li>Appuyer sur <kbd>Ctrl</kbd>+<kbd>C</kbd></li>
+</ul>
+</section>
+
+<section id="loop-types">
+<h3>Les deux types de boucles</h3>
+
+<h4>1. Boucle à intervalle fixe</h4>
+<p>Vous spécifiez l'intervalle&nbsp;:</p>
+<pre><code>/loop 5m Vérifie si les tests passent</code></pre>
+<p>Claude se réveille exactement toutes les 5 minutes et exécute la tâche. Simple et prévisible.</p>
+
+<h4>2. Boucle dynamique (auto-régulée)</h4>
+<p>Vous omettez l'intervalle&nbsp;:</p>
+<pre><code>/loop Surveille le déploiement et dis-moi quand c'est fini</code></pre>
+<p>Claude <strong>décide lui-même</strong> à quelle fréquence vérifier. C'est la méthode la plus intelligente&nbsp;: Claude adapte son rythme en fonction de ce qu'il observe.</p>
+
+<div class="encadre astuce">
+<strong>Exemple concret&nbsp;:</strong> Si Claude surveille un build qui vient de démarrer, il va peut-être attendre 4 minutes avant le premier check (le temps que le build avance), puis 2 minutes entre les checks suivants s'il voit que ça progresse, puis s'arrêter quand c'est terminé.
+</div>
+</section>
+
+<section id="loop-cas-usage">
+<h3>Cas d'usage courants</h3>
+
+<h4>Surveiller un build ou un déploiement</h4>
+<pre><code>/loop 3m Vérifie le statut du build GitHub Actions et préviens-moi quand c'est fini</code></pre>
+<p>Parfait quand vous avez lancé un build et voulez être prévenu sans rester devant l'écran.</p>
+
+<h4>Vérification continue de la qualité</h4>
+<pre><code>/loop 10m Lance les tests unitaires et signale tout échec</code></pre>
+<p>Utile pendant une session de développement intense où vous voulez un filet de sécurité.</p>
+
+<h4>Surveillance d'un processus</h4>
+<pre><code>/loop Surveille l'import des données. Quand les 50 000 lignes sont traitées, génère un rapport.</code></pre>
+<p>Claude adapte son rythme et s'arrête quand c'est fini.</p>
+
+<h4>Tâche autonome avec progression</h4>
+<pre><code>/loop Migre les fichiers du dossier legacy/ un par un vers le nouveau format. Fais un commit après chaque fichier.</code></pre>
+<p>Claude travaille seul, à son rythme, en faisant des pauses entre chaque étape.</p>
+
+<h4>Combiner avec une commande</h4>
+<pre><code>/loop 5m /commit</code></pre>
+<p>Crée un commit automatique toutes les 5 minutes avec les changements en cours. Pratique pour sauvegarder régulièrement pendant une longue session.</p>
+</section>
+
+<section id="loop-sous-le-capot">
+<h3>Sous le capot&nbsp;: comment Claude gère le rythme</h3>
+<p>Comprendre comment les boucles fonctionnent en interne vous aidera à mieux les utiliser.</p>
+
+<h4>Le mécanisme de réveil</h4>
+<ol>
+<li>Vous lancez <code>/loop</code></li>
+<li>Claude exécute la tâche une première fois</li>
+<li>À la fin, Claude programme un <strong>réveil</strong> (comme une alarme) pour la prochaine exécution</li>
+<li>Claude «&nbsp;s'endort&nbsp;» — il ne consomme pas de ressources entre les réveils</li>
+<li>Au réveil, il reprend la tâche avec tout le contexte de la conversation</li>
+</ol>
+
+<h4>Le cache de contexte (important pour le coût)</h4>
+<p>Claude utilise un <strong>cache de conversation</strong> qui dure <strong>5 minutes</strong>. Voici pourquoi c'est important&nbsp;:</p>
+<ul>
+<li><strong>Si le réveil est dans moins de 5 minutes</strong> — le cache est encore «&nbsp;chaud&nbsp;». Claude reprend instantanément et le coût est faible.</li>
+<li><strong>Si le réveil est dans plus de 5 minutes</strong> — le cache a expiré. Claude doit relire toute la conversation, ce qui est plus lent et plus coûteux.</li>
+</ul>
+
+<div class="encadre">
+<strong>Les bons intervalles selon le cache&nbsp;:</strong>
+<table>
+<thead><tr><th>Intervalle</th><th>Cache</th><th>Idéal pour</th></tr></thead>
+<tbody>
+<tr><td>1–4 minutes</td><td>✓ Chaud</td><td>Surveillance active (build en cours, tests)</td></tr>
+<tr><td>5 minutes pile</td><td>✗ Le pire choix</td><td>Évitez&nbsp;! Vous payez le cache froid sans bénéfice</td></tr>
+<tr><td>10–30 minutes</td><td>✗ Froid</td><td>Tâches lentes où checker souvent ne sert à rien</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Comment Claude choisit l'intervalle en mode dynamique</h4>
+<p>Quand vous lancez <code>/loop</code> sans intervalle, Claude prend en compte&nbsp;:</p>
+<ul>
+<li><strong>La nature de la tâche</strong> — un build de 2 minutes vs un déploiement de 20 minutes</li>
+<li><strong>Ce qu'il a observé</strong> — si rien n'a changé, il espace les vérifications</li>
+<li><strong>Le coût</strong> — il évite de gaspiller des ressources en vérifiant trop souvent</li>
+<li><strong>L'urgence</strong> — une surveillance critique sera plus fréquente</li>
+</ul>
+<p>En pratique, pour une tâche sans urgence particulière, Claude choisit souvent un intervalle de <strong>20 à 30 minutes</strong>.</p>
+</section>
+
+<section id="loop-bonnes-pratiques">
+<h3>Bonnes pratiques et pièges</h3>
+
+<h4>✓ À faire</h4>
+<ul>
+<li><strong>Soyez précis dans la tâche</strong> — <em>«&nbsp;Vérifie si les tests passent&nbsp;»</em> est mieux que <em>«&nbsp;Surveille le projet&nbsp;»</em></li>
+<li><strong>Définissez une condition d'arrêt</strong> — <em>«&nbsp;…et arrête-toi quand le build est vert&nbsp;»</em></li>
+<li><strong>Utilisez le mode dynamique</strong> quand vous ne savez pas combien de temps ça va prendre</li>
+<li><strong>Privilégiez des intervalles de 2–4 minutes</strong> pour la surveillance active (cache chaud)</li>
+<li><strong>Utilisez 15–30 minutes</strong> pour les tâches non urgentes (un seul cache froid rentabilisé)</li>
+</ul>
+
+<h4>✗ À éviter</h4>
+<table>
+<thead><tr><th>Piège</th><th>Pourquoi c'est un problème</th><th>Alternative</th></tr></thead>
+<tbody>
+<tr><td>Intervalle de 5 minutes</td><td>Pire choix possible (cache expiré sans bénéfice)</td><td>4 min (cache chaud) ou 15 min (cache froid rentabilisé)</td></tr>
+<tr><td>Boucle sans condition d'arrêt</td><td>Tourne indéfiniment, consomme des ressources</td><td>Ajoutez <em>«&nbsp;arrête quand…&nbsp;»</em></td></tr>
+<tr><td>Intervalle trop court pour une tâche longue</td><td>8 checks d'un build de 8 min = gaspillage</td><td>Utilisez le mode dynamique</td></tr>
+<tr><td>Tâche trop vague</td><td>Claude ne sait pas quoi vérifier</td><td>Soyez spécifique sur ce qu'il doit regarder</td></tr>
+</tbody>
+</table>
+</section>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="partie-3">
+<h2>Partie 3 — Combiner Plans et Boucles</h2>
+<p>Les plans et les boucles sont encore plus puissants ensemble. Voici des scénarios typiques&nbsp;:</p>
+
+<h3>Scénario 1&nbsp;: Planifier puis exécuter en boucle</h3>
+<div class="encadre">
+<p><strong>Étape 1 — Planifier&nbsp;:</strong></p>
+<pre><code>Planifie la migration de tous les fichiers JavaScript en TypeScript.
+Liste chaque fichier à migrer et l'ordre de migration.</code></pre>
+<p><strong>Étape 2 — Valider le plan</strong> (vous relisez, ajustez)</p>
+<p><strong>Étape 3 — Exécuter en boucle&nbsp;:</strong></p>
+<pre><code>/loop Migre le prochain fichier du plan. Fais un commit après
+chaque fichier. Arrête-toi quand tous les fichiers sont migrés.</code></pre>
+<p>Claude suit le plan et migre un fichier par itération, avec des pauses entre chaque pour ne pas tout faire d'un bloc.</p>
+</div>
+
+<h3>Scénario 2&nbsp;: Plan + surveillance</h3>
+<div class="encadre">
+<p><strong>Étape 1&nbsp;:</strong> Vous planifiez et exécutez un gros refactoring</p>
+<p><strong>Étape 2&nbsp;:</strong> Vous lancez les tests en arrière-plan</p>
+<p><strong>Étape 3&nbsp;:</strong></p>
+<pre><code>/loop 3m Vérifie les résultats des tests. Si quelque chose
+échoue à cause du refactoring, corrige-le.</code></pre>
+<p>Claude surveille et corrige automatiquement les régressions.</p>
+</div>
+
+<h3>Scénario 3&nbsp;: Boucle de travail autonome</h3>
+<div class="encadre">
+<pre><code>/loop
+Il y a 12 issues ouvertes dans le repo. Pour chaque issue :
+1. Planifie la correction
+2. Implémente la correction
+3. Fais un commit
+4. Passe à l'issue suivante
+Arrête-toi quand toutes les issues sont traitées.</code></pre>
+<p>Claude travaille de manière totalement autonome, en planifiant chaque correction avant de la coder.</p>
+</div>
+
+<div class="encadre astuce">
+<strong>Conseil final&nbsp;:</strong> Commencez par utiliser les plans seuls pour les tâches complexes. Quand vous êtes à l'aise, ajoutez les boucles pour automatiser les tâches répétitives. La combinaison des deux est le niveau supérieur&nbsp;: Claude qui réfléchit, exécute et surveille, le tout en autonomie.
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<section id="glossaire">
+<h2>Glossaire</h2>
+<dl>
+<dt id="gl-plan">Mode Plan</dt>
+<dd>Mode de Claude Code où il analyse et propose une stratégie avant de modifier le code. Les outils d'écriture sont désactivés pendant la planification.</dd>
+
+<dt id="gl-loop">Boucle (<code>/loop</code>)</dt>
+<dd>Commande qui fait répéter une tâche à Claude automatiquement, soit à intervalle fixe, soit en mode auto-régulé.</dd>
+
+<dt id="gl-cache">Cache de contexte</dt>
+<dd>Mémoire temporaire (5 minutes) qui permet à Claude de reprendre une conversation rapidement. Influence le choix de l'intervalle des boucles.</dd>
+
+<dt id="gl-intervalle-fixe">Boucle à intervalle fixe</dt>
+<dd>Boucle où vous spécifiez l'intervalle (ex&nbsp;: <code>/loop 5m</code>). Claude se réveille exactement à cet intervalle.</dd>
+
+<dt id="gl-intervalle-dynamique">Boucle dynamique</dt>
+<dd>Boucle où Claude choisit lui-même l'intervalle en fonction de la tâche. Lancée avec <code>/loop</code> sans intervalle.</dd>
+
+<dt id="gl-sous-agent">Sous-agent</dt>
+<dd>Instance spécialisée de Claude qui travaille sur une sous-tâche dans un contexte séparé, puis renvoie le résultat à Claude principal.</dd>
+
+<dt id="gl-reveil">Réveil (wake-up)</dt>
+<dd>Mécanisme interne qui «&nbsp;réveille&nbsp;» Claude à l'heure programmée pour la prochaine itération d'une boucle.</dd>
+
+<dt id="gl-thinking">Espace de réflexion (thinking)</dt>
+<dd>Zone interne où Claude organise ses pensées avant de répondre. Invisible pour l'utilisateur, mais essentiel pour la qualité des plans.</dd>
+</dl>
+</section>
+
+<footer>
+<p>Ce guide fait partie de <a href="index.html">Apprendre l'IA avec Claude</a>. Toutes les fonctionnalités décrites sont disponibles dans Claude Code.</p>
+</footer>
+</body>
+</html>
