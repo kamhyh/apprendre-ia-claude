@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sous-agents parallèles - Apprendre l'IA avec Claude</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="site-nav" aria-label="Navigation du site">
+<div class="nav-inner">
+<span class="nav-title">Apprendre l'IA</span>
+<button class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+<div class="nav-links">
+<a href="index.html">Guide pas à pas</a>
+<a href="creer-plugin-skills.html">Créer un plugin de skills</a>
+<a href="plans-et-boucles.html">Plans &amp; Boucles</a>
+<a href="sous-agents-paralleles.html" class="active">Sous-agents parallèles</a>
+</div>
+</div>
+</nav>
+
+<header>
+<h1>Les sous-agents parallèles</h1>
+<p class="sous-titre">Comment Claude délègue du travail à plusieurs «&nbsp;assistants&nbsp;» en même temps pour aller plus vite.</p>
+</header>
+
+<nav class="sommaire" aria-label="Sommaire">
+<h2>Sommaire</h2>
+<ol>
+<li><a href="#concept">C'est quoi, un sous-agent&nbsp;?</a></li>
+<li><a href="#pourquoi">Pourquoi des sous-agents parallèles&nbsp;?</a></li>
+<li><a href="#types">Les types de sous-agents</a></li>
+<li><a href="#comment">Comment les déclencher</a></li>
+<li><a href="#exemples">Exemples concrets</a></li>
+<li><a href="#sous-le-capot">Sous le capot</a></li>
+<li><a href="#bonnes-pratiques">Bonnes pratiques</a></li>
+<li><a href="#limites">Limites et pièges</a></li>
+<li><a href="#recapitulatif">Récapitulatif</a></li>
+</ol>
+</nav>
+
+<!-- ════════════════════════════════════════════ -->
+<section id="concept">
+<h2>1. C'est quoi, un sous-agent&nbsp;?</h2>
+
+<div class="note">
+<strong>Analogie simple</strong><br>
+Imaginez un chef cuisinier (Claude) qui prépare un repas complexe. Plutôt que de faire <em>tout</em> seul — couper les légumes, faire la sauce, cuire la viande — il peut appeler des commis de cuisine. Chaque commis reçoit une tâche précise, travaille de son côté, puis rapporte le résultat au chef. Le chef assemble le tout.
+</div>
+
+<p>Un <strong>sous-agent</strong> est une instance séparée de Claude, lancée par Claude lui-même pour accomplir une tâche spécifique. Le sous-agent&nbsp;:</p>
+<ul>
+<li>Reçoit un <strong>briefing</strong> (ce qu'il doit faire, pourquoi, dans quel contexte)</li>
+<li>A accès aux mêmes <strong>outils</strong> (lire des fichiers, chercher du code, etc.)</li>
+<li>Travaille de façon <strong>indépendante</strong> — il ne voit pas la conversation principale</li>
+<li>Renvoie un <strong>résultat unique</strong> au Claude principal quand il a fini</li>
+</ul>
+
+<p>Le mot clé est <strong>parallèle</strong>&nbsp;: plusieurs sous-agents peuvent travailler <em>en même temps</em>, chacun sur une tâche différente. C'est comme avoir plusieurs onglets ouverts, mais chacun avec son propre assistant.</p>
+
+<h3>Sous-agent vs. outil</h3>
+<table>
+<thead>
+<tr><th>Caractéristique</th><th>Outil (ex. lire un fichier)</th><th>Sous-agent</th></tr>
+</thead>
+<tbody>
+<tr><td>Fait une seule action</td><td>✅ Oui</td><td>❌ Non — peut enchaîner plusieurs actions</td></tr>
+<tr><td>Prend des décisions</td><td>❌ Non</td><td>✅ Oui — il réfléchit et s'adapte</td></tr>
+<tr><td>Voit la conversation</td><td>✅ Oui (indirectement)</td><td>❌ Non — repart de zéro avec son briefing</td></tr>
+<tr><td>Peut tourner longtemps</td><td>❌ Non (rapide)</td><td>✅ Oui — peut faire des dizaines d'étapes</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<section id="pourquoi">
+<h2>2. Pourquoi des sous-agents parallèles&nbsp;?</h2>
+
+<div class="deux-colonnes">
+<div>
+<h3>❌ Sans sous-agents</h3>
+<p>Claude fait tout <strong>séquentiellement</strong>&nbsp;:</p>
+<ol>
+<li>Chercher les fichiers TypeScript → attendre</li>
+<li>Chercher les fichiers Python → attendre</li>
+<li>Analyser l'architecture → attendre</li>
+<li>Vérifier les tests → attendre</li>
+</ol>
+<p><strong>Durée totale</strong>&nbsp;: la somme de tout.</p>
+</div>
+<div>
+<h3>✅ Avec sous-agents parallèles</h3>
+<p>Claude lance 4 sous-agents <strong>en même temps</strong>&nbsp;:</p>
+<ol>
+<li>Agent A → fichiers TypeScript</li>
+<li>Agent B → fichiers Python</li>
+<li>Agent C → architecture</li>
+<li>Agent D → tests</li>
+</ol>
+<p><strong>Durée totale</strong>&nbsp;: celle du plus lent des 4.</p>
+</div>
+</div>
+
+<div class="note">
+<strong>Gain concret</strong><br>
+Si chaque recherche prend 30 secondes, le mode séquentiel met 2 minutes. Avec 4 sous-agents parallèles, on tombe à ~30 secondes. C'est 4× plus rapide.
+</div>
+
+<h3>Quand c'est utile</h3>
+<ul>
+<li><strong>Explorer un gros projet</strong> — chercher dans plusieurs dossiers en même temps</li>
+<li><strong>Analyser plusieurs aspects</strong> — sécurité + performance + qualité en parallèle</li>
+<li><strong>Comparer des approches</strong> — tester 3 stratégies différentes simultanément</li>
+<li><strong>Recueillir des informations</strong> — lire la doc, le code et les tests en même temps</li>
+</ul>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<section id="types">
+<h2>3. Les types de sous-agents</h2>
+
+<p>Claude Code propose plusieurs types de sous-agents spécialisés&nbsp;:</p>
+
+<table>
+<thead>
+<tr><th>Type</th><th>Spécialité</th><th>Quand l'utiliser</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Explore</strong></td>
+<td>Explorer le code source rapidement</td>
+<td>Trouver des fichiers, chercher des mots-clés, comprendre la structure d'un projet</td>
+</tr>
+<tr>
+<td><strong>Plan</strong></td>
+<td>Concevoir des stratégies d'implémentation</td>
+<td>Réfléchir à l'architecture, identifier les fichiers critiques, peser le pour et le contre</td>
+</tr>
+<tr>
+<td><strong>general-purpose</strong></td>
+<td>Tout faire (recherche, code, exécution)</td>
+<td>Tâches complexes qui nécessitent plusieurs étapes</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Choisir le bon type</h3>
+<div class="note">
+<strong>Règle simple</strong><br>
+<ul>
+<li>Vous cherchez quelque chose → <strong>Explore</strong></li>
+<li>Vous planifiez quelque chose → <strong>Plan</strong></li>
+<li>Vous devez faire quelque chose de complexe → <strong>general-purpose</strong></li>
+</ul>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<section id="comment">
+<h2>4. Comment les déclencher</h2>
+
+<p>En tant qu'utilisateur, vous n'avez <strong>pas besoin de syntaxe spéciale</strong>. Claude décide automatiquement quand utiliser des sous-agents. Mais vous pouvez l'<strong>encourager</strong> avec votre formulation.</p>
+
+<h3>Formulations qui déclenchent naturellement des sous-agents</h3>
+
+<div class="exemple-box">
+<h4>✅ Déclenche des sous-agents parallèles</h4>
+<pre><code>Analyse ce projet : vérifie la sécurité, la performance
+et la qualité du code en parallèle.</code></pre>
+<pre><code>Cherche tous les endroits où on utilise l'authentification,
+dans le backend ET le frontend en même temps.</code></pre>
+<pre><code>Compare trois approches pour implémenter cette fonctionnalité
+et dis-moi laquelle est la meilleure.</code></pre>
+</div>
+
+<div class="exemple-box">
+<h4>❌ Ne déclenche probablement PAS de sous-agents</h4>
+<pre><code>Lis le fichier config.ts</code></pre>
+<p><em>→ Trop simple, un seul outil suffit.</em></p>
+<pre><code>Corrige ce bug dans la ligne 42</code></pre>
+<p><em>→ Tâche ciblée, pas besoin de parallélisme.</em></p>
+</div>
+
+<h3>Le mot magique : «&nbsp;en parallèle&nbsp;»</h3>
+<p>Si vous écrivez explicitement <strong>«&nbsp;en parallèle&nbsp;»</strong> ou <strong>«&nbsp;en même temps&nbsp;»</strong>, Claude est fortement incité à lancer plusieurs sous-agents simultanément.</p>
+
+<div class="exemple-box">
+<h4>Exemple</h4>
+<pre><code>Lance en parallèle :
+1. Un agent qui explore la structure du backend
+2. Un agent qui liste toutes les routes API
+3. Un agent qui vérifie la couverture de tests</code></pre>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<section id="exemples">
+<h2>5. Exemples concrets</h2>
+
+<h3>Exemple 1 — Explorer un projet inconnu</h3>
+<div class="scenario">
+<p><strong>Situation</strong>&nbsp;: Vous venez de rejoindre un projet et vous voulez comprendre comment il fonctionne.</p>
+<p><strong>Ce que vous dites à Claude&nbsp;:</strong></p>
+<pre><code>Je découvre ce projet. Peux-tu m'expliquer en parallèle :
+- La structure des dossiers et l'architecture générale
+- Comment l'authentification fonctionne
+- Quels sont les principaux modèles de données
+- Comment les tests sont organisés</code></pre>
+<p><strong>Ce que Claude fait&nbsp;:</strong></p>
+<ol>
+<li>Lance 4 sous-agents <strong>Explore</strong> en parallèle</li>
+<li>Chacun fouille le code de son côté</li>
+<li>Claude reçoit les 4 rapports</li>
+<li>Il vous fait une synthèse claire et structurée</li>
+</ol>
+</div>
+
+<h3>Exemple 2 — Audit de sécurité rapide</h3>
+<div class="scenario">
+<p><strong>Situation</strong>&nbsp;: Vous voulez vérifier la sécurité avant de mettre en production.</p>
+<p><strong>Ce que vous dites à Claude&nbsp;:</strong></p>
+<pre><code>Fais un audit de sécurité en parallèle :
+- Vérifie les injections SQL possibles
+- Cherche les mots de passe en dur dans le code
+- Analyse la gestion des permissions
+- Vérifie que les entrées utilisateur sont validées</code></pre>
+<p><strong>Ce que Claude fait&nbsp;:</strong></p>
+<ol>
+<li>Lance 4 sous-agents en parallèle, chacun spécialisé sur un aspect</li>
+<li>Chaque agent cherche dans <em>tout</em> le projet</li>
+<li>Claude compile les résultats en un rapport avec les risques classés par gravité</li>
+</ol>
+</div>
+
+<h3>Exemple 3 — Refactoring à grande échelle</h3>
+<div class="scenario">
+<p><strong>Situation</strong>&nbsp;: Vous voulez renommer un concept dans tout le projet.</p>
+<p><strong>Ce que vous dites à Claude&nbsp;:</strong></p>
+<pre><code>Je veux renommer "User" en "Account" partout dans le projet.
+D'abord, recherche en parallèle tous les endroits
+où "User" apparaît : modèles, routes, tests, documentation.</code></pre>
+<p><strong>Ce que Claude fait&nbsp;:</strong></p>
+<ol>
+<li>Lance des sous-agents pour chercher dans chaque zone du projet</li>
+<li>Compile la liste complète des fichiers à modifier</li>
+<li>Vous propose un plan de renommage avant de toucher au code</li>
+</ol>
+</div>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<section id="sous-le-capot">
+<h2>6. Sous le capot</h2>
+
+<p>Voici comment les sous-agents fonctionnent techniquement (pas besoin de retenir tout, c'est pour comprendre).</p>
+
+<h3>Le cycle de vie d'un sous-agent</h3>
+
+<svg viewBox="0 0 700 350" xmlns="http://www.w3.org/2000/svg" style="max-width:700px;width:100%;margin:1.5em auto;display:block" aria-label="Cycle de vie d'un sous-agent">
+  <!-- Claude principal -->
+  <rect x="250" y="10" width="200" height="50" rx="10" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="350" y="42" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Claude principal</text>
+
+  <!-- Flèches vers les sous-agents -->
+  <line x1="290" y1="60" x2="120" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-sa)"/>
+  <line x1="350" y1="60" x2="350" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-sa)"/>
+  <line x1="410" y1="60" x2="580" y2="120" stroke="#64748b" stroke-width="2" marker-end="url(#arrow-sa)"/>
+
+  <!-- Labels briefing -->
+  <text x="185" y="85" text-anchor="middle" fill="#64748b" font-size="11">briefing</text>
+  <text x="365" y="95" text-anchor="start" fill="#64748b" font-size="11">briefing</text>
+  <text x="505" y="85" text-anchor="middle" fill="#64748b" font-size="11">briefing</text>
+
+  <!-- Sous-agents -->
+  <rect x="30" y="120" width="180" height="50" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="120" y="150" text-anchor="middle" fill="#1e40af" font-size="14">🔍 Agent Explore</text>
+
+  <rect x="260" y="120" width="180" height="50" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="350" y="150" text-anchor="middle" fill="#1e40af" font-size="14">📋 Agent Plan</text>
+
+  <rect x="490" y="120" width="180" height="50" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="580" y="150" text-anchor="middle" fill="#1e40af" font-size="14">⚙️ Agent Général</text>
+
+  <!-- Travail en cours -->
+  <rect x="30" y="190" width="180" height="40" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="120" y="215" text-anchor="middle" fill="#64748b" font-size="12">cherche, lit, analyse…</text>
+
+  <rect x="260" y="190" width="180" height="40" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="350" y="215" text-anchor="middle" fill="#64748b" font-size="12">réfléchit, structure…</text>
+
+  <rect x="490" y="190" width="180" height="40" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="580" y="215" text-anchor="middle" fill="#64748b" font-size="12">code, teste, vérifie…</text>
+
+  <!-- Flèches retour -->
+  <line x1="120" y1="230" x2="290" y2="280" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-sa-green)"/>
+  <line x1="350" y1="230" x2="350" y2="280" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-sa-green)"/>
+  <line x1="580" y1="230" x2="410" y2="280" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-sa-green)"/>
+
+  <!-- Labels résultat -->
+  <text x="185" y="260" text-anchor="middle" fill="#16a34a" font-size="11">résultat</text>
+  <text x="365" y="260" text-anchor="start" fill="#16a34a" font-size="11">résultat</text>
+  <text x="505" y="260" text-anchor="middle" fill="#16a34a" font-size="11">résultat</text>
+
+  <!-- Synthèse -->
+  <rect x="220" y="280" width="260" height="50" rx="10" fill="#2563eb" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="350" y="312" text-anchor="middle" fill="white" font-size="16" font-weight="bold">Synthèse finale</text>
+
+  <!-- Flèche marqueurs -->
+  <defs>
+    <marker id="arrow-sa" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-sa-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+  </defs>
+</svg>
+
+<h3>Points techniques importants</h3>
+
+<table>
+<thead>
+<tr><th>Aspect</th><th>Détail</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mémoire</strong></td>
+<td>Un sous-agent <strong>ne voit pas</strong> la conversation principale. Il repart de zéro avec uniquement son briefing. C'est pourquoi le briefing doit être complet.</td>
+</tr>
+<tr>
+<td><strong>Outils</strong></td>
+<td>Les sous-agents ont accès aux mêmes outils que Claude principal (lire des fichiers, chercher, etc.) mais un agent <strong>Explore</strong> ne peut pas modifier de fichiers.</td>
+</tr>
+<tr>
+<td><strong>Isolation</strong></td>
+<td>Un sous-agent peut travailler dans un <strong>worktree isolé</strong> — une copie séparée du dépôt Git, pour éviter les conflits entre agents qui modifient des fichiers.</td>
+</tr>
+<tr>
+<td><strong>Résultat</strong></td>
+<td>Chaque sous-agent renvoie <strong>un seul message</strong> de résultat. Claude principal ne voit pas les étapes intermédiaires.</td>
+</tr>
+<tr>
+<td><strong>Foreground vs Background</strong></td>
+<td><strong>Foreground</strong> (par défaut)&nbsp;: Claude attend le résultat avant de continuer. <strong>Background</strong>&nbsp;: Claude continue à travailler pendant que l'agent tourne.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Le briefing — la clé de tout</h3>
+
+<p>La qualité du résultat dépend directement de la qualité du briefing. Un bon briefing&nbsp;:</p>
+
+<div class="deux-colonnes">
+<div>
+<h4>❌ Mauvais briefing</h4>
+<pre><code>"Cherche les bugs"</code></pre>
+<p><em>Trop vague — le sous-agent ne sait pas où chercher ni quoi considérer comme un bug.</em></p>
+</div>
+<div>
+<h4>✅ Bon briefing</h4>
+<pre><code>"Cherche dans src/api/ tous les
+endpoints qui ne valident pas les
+entrées utilisateur. Vérifie
+particulièrement les paramètres
+de requête et les corps JSON.
+Rapporte chaque fichier et ligne
+concernés."</code></pre>
+</div>
+</div>
+
+<p>Un bon briefing contient&nbsp;:</p>
+<ol>
+<li><strong>Le contexte</strong> — pourquoi cette tâche est nécessaire</li>
+<li><strong>L'objectif précis</strong> — ce qu'on cherche exactement</li>
+<li><strong>Le périmètre</strong> — où chercher</li>
+<li><strong>Le format attendu</strong> — comment présenter le résultat</li>
+</ol>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<section id="bonnes-pratiques">
+<h2>7. Bonnes pratiques</h2>
+
+<h3>✅ À faire</h3>
+<ul>
+<li><strong>Séparez les tâches indépendantes</strong> — si deux recherches n'ont aucun lien, elles peuvent tourner en parallèle</li>
+<li><strong>Soyez précis dans vos demandes</strong> — «&nbsp;en parallèle, vérifie X, Y et Z&nbsp;» est plus clair que «&nbsp;vérifie tout&nbsp;»</li>
+<li><strong>Utilisez les sous-agents pour la recherche</strong> — c'est leur point fort, surtout dans les gros projets</li>
+<li><strong>Laissez Claude synthétiser</strong> — ne demandez pas aux sous-agents de prendre des décisions finales, laissez le Claude principal assembler</li>
+</ul>
+
+<h3>❌ À éviter</h3>
+<ul>
+<li><strong>Ne lancez pas de sous-agent pour une tâche simple</strong> — lire un fichier ne nécessite pas un agent dédié</li>
+<li><strong>Ne créez pas de dépendances entre sous-agents</strong> — si l'agent B a besoin du résultat de l'agent A, ils ne peuvent pas tourner en parallèle</li>
+<li><strong>Ne demandez pas à un sous-agent de modifier ce qu'un autre sous-agent modifie</strong> — les conflits de fichiers sont possibles</li>
+<li><strong>N'attendez pas qu'un sous-agent «&nbsp;se souvienne&nbsp;»</strong> — chaque sous-agent repart de zéro</li>
+</ul>
+
+<h3>Tableau de décision</h3>
+<table>
+<thead>
+<tr><th>Situation</th><th>Sous-agents&nbsp;?</th><th>Pourquoi</th></tr>
+</thead>
+<tbody>
+<tr><td>Lire un fichier précis</td><td>❌ Non</td><td>Un simple outil suffit</td></tr>
+<tr><td>Chercher un mot dans le code</td><td>❌ Non</td><td>Grep est plus rapide</td></tr>
+<tr><td>Explorer 4 aspects d'un projet</td><td>✅ Oui</td><td>4 recherches indépendantes</td></tr>
+<tr><td>Comparer 3 stratégies</td><td>✅ Oui</td><td>3 analyses indépendantes</td></tr>
+<tr><td>Modifier un fichier puis le tester</td><td>❌ Non</td><td>Séquentiel, pas parallèle</td></tr>
+<tr><td>Auditer sécurité + perf + qualité</td><td>✅ Oui</td><td>3 domaines indépendants</td></tr>
+</tbody>
+</table>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<section id="limites">
+<h2>8. Limites et pièges</h2>
+
+<div class="note" style="border-left-color:#dc2626">
+<strong>⚠️ Points d'attention</strong>
+</div>
+
+<h3>Les sous-agents ne communiquent pas entre eux</h3>
+<p>Chaque sous-agent est isolé. Si l'agent A découvre quelque chose d'important pour l'agent B, il ne peut pas le lui dire. C'est Claude principal qui fait le lien après coup.</p>
+
+<h3>Le briefing ne contient pas la conversation</h3>
+<p>Un sous-agent ne voit <strong>rien</strong> de ce que vous avez dit avant. Si vous avez donné du contexte important au début de la conversation, Claude doit le ré-inclure dans le briefing du sous-agent.</p>
+
+<h3>Conflit de fichiers</h3>
+<p>Si deux sous-agents essaient de modifier le même fichier en même temps, les résultats peuvent se chevaucher. Solution&nbsp;: utiliser l'<strong>isolation worktree</strong> (chaque agent travaille sur sa propre copie du code).</p>
+
+<h3>Coût en ressources</h3>
+<p>Chaque sous-agent consomme des tokens (la «&nbsp;monnaie&nbsp;» de l'IA). Trois sous-agents en parallèle consomment ~3× plus qu'un seul Claude. Mais c'est souvent rentable&nbsp;: 3× plus de tokens pour 3× moins de temps d'attente.</p>
+
+<h3>Résultats partiels</h3>
+<p>Si un sous-agent échoue ou ne trouve rien, Claude principal le signale et peut relancer la recherche avec un briefing ajusté. Votre travail n'est pas perdu.</p>
+</section>
+
+<!-- ════════════════════════════════════════════ -->
+<section id="recapitulatif">
+<h2>9. Récapitulatif</h2>
+
+<table>
+<thead>
+<tr><th>Concept</th><th>En une phrase</th></tr>
+</thead>
+<tbody>
+<tr><td>Sous-agent</td><td>Une instance séparée de Claude qui reçoit une tâche et renvoie un résultat</td></tr>
+<tr><td>Parallèle</td><td>Plusieurs sous-agents qui travaillent en même temps sur des tâches indépendantes</td></tr>
+<tr><td>Briefing</td><td>Le message qui explique au sous-agent ce qu'il doit faire — doit être autonome et complet</td></tr>
+<tr><td>Explore</td><td>Type de sous-agent spécialisé dans la recherche de code</td></tr>
+<tr><td>Plan</td><td>Type de sous-agent spécialisé dans la conception et l'architecture</td></tr>
+<tr><td>Foreground</td><td>Claude attend le résultat avant de continuer</td></tr>
+<tr><td>Background</td><td>Claude continue à travailler pendant que l'agent tourne en arrière-plan</td></tr>
+<tr><td>Worktree</td><td>Copie isolée du code pour éviter les conflits entre agents</td></tr>
+</tbody>
+</table>
+
+<div class="note">
+<strong>En résumé</strong><br>
+Les sous-agents parallèles sont comme une équipe&nbsp;: chaque membre travaille sur sa spécialité, et le chef d'équipe (Claude) assemble le tout. Vous n'avez pas besoin de gérer l'équipe — il suffit de décrire ce que vous voulez, et Claude décide comment répartir le travail.
+</div>
+</section>
+
+<footer>
+<p>Guide «&nbsp;Apprendre l'IA avec Claude&nbsp;» — <a href="https://github.com/kamhyh/apprendre-ia-claude">Code source sur GitHub</a></p>
+</footer>
+
+</body>
+</html>
